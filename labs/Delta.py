@@ -189,14 +189,17 @@ answers = {
     #     "⬜⬜⬜⬜⬜",
 }
 
+def convertStringToIntArray(string):
+    return [(1 if s == '⬛' else -1) for s in string]
+
 # Конвектирует string в Array<int>.
-def convertInputFromStringToIntArray(inputDataDictionary):
+def convertInputFromStringToIntArrays(inputDataDictionary):
     outputData = {}
     for key, string in inputDataDictionary.items():
-        outputData[key] = [(1 if s == '⬛' else -1) for s in string]
+        outputData[key] = convertStringToIntArray(string)
     return outputData
 
-answers = convertInputFromStringToIntArray(answers)
+answers = convertInputFromStringToIntArrays(answers)
 
 neurons_input = [Neuron() for _ in range(25)]
 
@@ -226,11 +229,15 @@ def getAnswerFromNet(inputNeurons, outputNeurons, inputImage):
 
 print(getAnswerFromNet(neurons_input, neurons_output, answers['A']))
 
-def education(neurons_input, neurons_output, answers, speed, eNeed):
-    eMax = eNeed + 1
+def education(neurons_input, neurons_output, answers, speed, accuracyNeed):
+    good = 0
     countAll = len(answers) * len(neurons_output)
-    while eMax > eNeed:
-        eMax = 0
+    needLastContinue = True
+    while good/countAll < accuracyNeed or needLastContinue:
+        if not good/countAll < accuracyNeed:
+            needLastContinue = False
+        else:
+            needLastContinue = True
         good = 0
         for keyAnswer, arrayAnswer in answers.items():
             setImageToInput(neurons_input, arrayAnswer)
@@ -240,12 +247,18 @@ def education(neurons_input, neurons_output, answers, speed, eNeed):
                 if e == 0:
                     good += 1
                 else:
-                    if e > eMax:
-                        eMax = e
                     neuronOutput.modificationEducation(speed * e)
         print(good/countAll, 'good', good, 'countAll', countAll)
 
-education(neurons_input, neurons_output, answers, 0.0000000001, 0)
+education(neurons_input, neurons_output, answers, 0.0000000001, 0.99)
 for key, answerArray in answers.items():
     outputNet = getAnswerFromNet(neurons_input, neurons_output, answerArray)
     print('char:', key, 'net:', outputNet)
+
+print(getAnswerFromNet(neurons_input, neurons_output, convertStringToIntArray(
+    "⬜⬛⬛⬜⬜" +
+    "⬛⬜⬜⬛⬜" +
+    "⬛⬜⬜⬛⬜" +
+    "⬛⬛⬜⬛⬜" +
+    "⬛⬜⬜⬛⬜"
+)))
