@@ -1,3 +1,4 @@
+﻿# python3 Delta.py
 # To add a new cell, type '# %%'
 # To add a new markdown cell, type '# %% [markdown]'
 # %%
@@ -18,10 +19,10 @@ class Neuron:
             self.value += n.get() * w
         return 1 if self.value > 0 else -1
     def getBool(self):
-        return True if self.get() > 0 else False
+        return self.get() > 0
     def modificationEducation(self, toAddW):
         for neuron in self.inputs.keys():
-            self.inputs[neuron] += toAddW * neuron.value
+            self.inputs[neuron] += toAddW * neuron.get()
             neuron.modificationEducation(toAddW)
 
 answers = {
@@ -233,8 +234,8 @@ def education(neurons_input, neurons_output, answers, speed, accuracyNeed):
     good = 0
     countAll = len(answers) * len(neurons_output)
     needLastContinue = True
-    while good/countAll < accuracyNeed or needLastContinue:
-        if not good/countAll < accuracyNeed:
+    while good/float(countAll) < accuracyNeed or needLastContinue:
+        if not good/float(countAll) < accuracyNeed:
             needLastContinue = False
         else:
             needLastContinue = True
@@ -248,15 +249,15 @@ def education(neurons_input, neurons_output, answers, speed, accuracyNeed):
                     good += 1
                 else:
                     neuronOutput.modificationEducation(speed * e)
-        print(good/countAll, 'good', good, 'countAll', countAll)
+        print(good/float(countAll), 'good', good, 'countAll', countAll)
 
-education(neurons_input, neurons_output, answers, 0.0000000001, 0.99)
+education(neurons_input, neurons_output, answers, 0.0000001, 0.99)
 for key, answerArray in answers.items():
     outputNet = getAnswerFromNet(neurons_input, neurons_output, answerArray)
     print('char:', key, 'net:', outputNet)
 
 print(getAnswerFromNet(neurons_input, neurons_output, convertStringToIntArray(
-    "⬜⬛⬛⬜⬜" +
+    "⬜⬛⬛⬛⬜" +
     "⬛⬜⬜⬛⬜" +
     "⬛⬜⬜⬛⬜" +
     "⬛⬛⬜⬛⬜" +
