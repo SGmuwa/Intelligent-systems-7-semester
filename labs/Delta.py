@@ -235,10 +235,7 @@ def education(neurons_input, neurons_output, answers, speed, accuracyNeed):
     countAll = len(answers) * len(neurons_output)
     needLastContinue = True
     while good/float(countAll) < accuracyNeed or needLastContinue:
-        if not good/float(countAll) < accuracyNeed:
-            needLastContinue = False
-        else:
-            needLastContinue = True
+        needLastContinue = good/float(countAll) < accuracyNeed
         good = 0
         for keyAnswer, arrayAnswer in answers.items():
             setImageToInput(neurons_input, arrayAnswer)
