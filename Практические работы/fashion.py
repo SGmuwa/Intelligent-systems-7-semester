@@ -15,16 +15,13 @@ y_train = utils.to_categorical(y_train, 10)
 classes = ['футболка', 'брюки', 'свитер', 'платье', 'пальто', 'туфли', 'рубашка', 'кроссовки', 'сумка', 'ботинки']
 
 if '-p' in sys.argv:
- out = []
  for a, b in zip(x_train, y_train):
-  out.extend(str(classes[np.argmax(b)]))
-  out.extend('\n')
+  print(str(classes[np.argmax(b)]))
   for i in range(len(a)):
-   out.extend(' ' if a[i] < 0.33 else ('-' if a[i] < 0.66 else 'M'))
+   print(' ' if a[i] < 0.33 else ('-' if a[i] < 0.66 else 'M'), end='')
    if (i + 1) % 28 == 0:
-    out.extend('\n')
-  out.extend('\n')
- print(''.join(out))
+    print()
+  print()
  exit()
 
 if '-h' in sys.argv:
