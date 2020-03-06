@@ -35,10 +35,10 @@ model.compile(loss="categorical_crossentropy", optimizer="SGD", metrics=["accura
 print(model.summary())
 
 model.fit(x_train, y_train, batch_size=200, epochs=100, validation_split=0.2, verbose=1)
+model.save('fashion_mnist_dense.h5')
 
 predictions = model.predict(x_train)
-print(prediction[0])
+print(predictions[0])
 print(np.argmax(predictions[0]))
 print(np_argmax(y_train[0]))
 
-model.save('fashion_mnist_dense.h5')
