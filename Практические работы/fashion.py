@@ -14,6 +14,7 @@ x_train = np.copy(x_train.reshape(60000, 784))
 x_train = x_train / 255
 
 y_train = utils.to_categorical(y_train, 10)
+y_test = utils.to_categorical(y_test, 10)
 classes = ['футболка', 'брюки', 'свитер', 'платье', 'пальто', 'туфли', 'рубашка', 'кроссовки', 'сумка', 'ботинки']
 
 if '-p' in sys.argv:
