@@ -10,8 +10,10 @@ import os
 
 (x_train, y_train), (x_test, y_test) = fashion_mnist.load_data()
 
-x_train = np.copy(x_train.reshape(60000, 784))
+x_train = x_train.reshape(60000, 784)
+x_test = x_test.reshape(10000, 784)
 x_train = x_train / 255
+x_test = x_test / 255
 
 y_train = utils.to_categorical(y_train, 10)
 y_test = utils.to_categorical(y_test, 10)
