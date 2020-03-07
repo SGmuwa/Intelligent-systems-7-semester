@@ -54,7 +54,7 @@ print('scores[1]: ', model.evaluate(x_test, y_test, verbose=1)[1])
 
 import glob
 for file in glob.glob("*.jpg"):
-    print(file)
+ print(file)
 img_path = input('image path: ')
 img = image.load_img(img_path, target_size=(28, 28), color_mode = "grayscale")
 
