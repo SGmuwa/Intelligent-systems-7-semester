@@ -56,7 +56,12 @@ print('scores[1]: ', model.evaluate(x_test, y_test, verbose=1)[1])
 from pathlib import Path
 for path in Path().rglob('*.jpg'):
  print(path)
-img_path = input('image path: ')
+img_path = input('image path or url: ')
+import re
+if re.search(r'https?://', img_path).group(0) is not None:
+ from urllib.request import urlretrieve
+ urlretrieve(img_path, "/tmp/.jpg")
+ img_path = "/tmp/.jpg"
 img = image.load_img(img_path, target_size=(28, 28), color_mode = "grayscale")
 
 # Преобразуем картинку в массив
