@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 from tensorflow.keras.datasets import fashion_mnist
+from tensorflow.keras.preprocessing import image
 from tensorflow.keras.models import load_model
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
@@ -52,9 +53,9 @@ print('np.argmax(predictions[0])', np.argmax(predictions[0]))
 print('np.argmax(y_train[0])', np.argmax(y_train[0]))
 print('scores[1]: ', model.evaluate(x_test, y_test, verbose=1)[1])
 
-import glob
-for file in glob.glob("*.jpg"):
- print(file)
+from pathlib import Path
+for path in Path().rglob('*.jpg'):
+ print(path)
 img_path = input('image path: ')
 img = image.load_img(img_path, target_size=(28, 28), color_mode = "grayscale")
 
