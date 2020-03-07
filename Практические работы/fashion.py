@@ -25,20 +25,22 @@ if '-p' in sys.argv:
  exit()
 
 if '-h' in sys.argv:
- print('learn fashion mnist.\n-h\thelp\n-p\tprint data')
+ print('learn fashion mnist.\n-h\thelp\n-p\tprint data\n-c\tcreate new model')
  exit()
 
-model = Sequential()
-model.add(Dense(800, input_dim=784, activation="relu"))
-model.add(Dense(10, activation="softmax"))
-model.compile(loss="categorical_crossentropy", optimizer="SGD", metrics=["accuracy"])
-print(model.summary())
+model = None
 
-model.fit(x_train, y_train, batch_size=200, epochs=100, validation_split=0.2, verbose=1)
-model.save('fashion_mnist_dense.h5')
+if '-c' in sys.argv or not os.path.exists('dense.h5'):
+ model = Sequential()
+ model.add(Dense(800, input_dim=784, activation="relu"))
+ model.add(Dense(10, activation="softmax"))
+ model.compile(loss="categorical_crossentropy", optimizer="SGD", metrics=["accuracy"])
+ print(model.summary())
+ model.fit(x_train, y_train, batch_size=200, epochs=100, validation_split=0.2, verbose=1)
+ model.save('dense.h5')
 
 predictions = model.predict(x_train)
-print(predictions[0])
-print(np.argmax(predictions[0]))
-print(np_argmax(y_train[0]))
+print('predictions[0]:', predictions[0])
+print('np.argmax(predictions[0])', np.argmax(predictions[0]))
+print('np.argmax(y_train[0])', np.argmax(y_train[0]))
 
