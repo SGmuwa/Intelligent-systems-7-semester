@@ -47,5 +47,5 @@ predictions = model.predict(x_train)
 print('predictions[0]:', predictions[0])
 print('np.argmax(predictions[0])', np.argmax(predictions[0]))
 print('np.argmax(y_train[0])', np.argmax(y_train[0]))
-print('socres: ', model.evaluate(x_test, y_test, verbose=1))
+print('socres[1]: ', model.evaluate(x_test, y_test, verbose=1)[1])
 
