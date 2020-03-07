@@ -5,6 +5,7 @@ from tensorflow.keras.layers import Dense
 from tensorflow.keras import utils
 import numpy as np
 import sys
+import os
 
 (x_train, y_train), (x_test, y_test) = fashion_mnist.load_data()
 
