@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 from tensorflow.keras.datasets import fashion_mnist
+from tensorflow.keras.models import load_model
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
 from tensorflow.keras import utils
@@ -39,6 +40,8 @@ if '-c' in sys.argv or not os.path.exists('dense.h5'):
  print(model.summary())
  model.fit(x_train, y_train, batch_size=200, epochs=100, validation_split=0.2, verbose=1)
  model.save('dense.h5')
+else:
+ model = load_model('dense.h5')
 
 predictions = model.predict(x_train)
 print('predictions[0]:', predictions[0])
