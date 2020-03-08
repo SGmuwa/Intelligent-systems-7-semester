@@ -14,6 +14,3 @@ if not os.path.exists("train"):
   exit()
  fantasy_zip.extractall('train')
  fantasy_zip.close()
-from pathlib import Path
-for path in Path('train').rglob('*'):
- print(path)
