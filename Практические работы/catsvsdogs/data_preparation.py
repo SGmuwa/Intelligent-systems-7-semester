@@ -20,7 +20,7 @@ import shutil
 import os
 
 # Каталог с набором данных
-data_dir = 'train'
+data_dir = 'data'
 # Каталог с данными для обучения
 train_dir = 'train'
 # Каталог с данными для проверки
