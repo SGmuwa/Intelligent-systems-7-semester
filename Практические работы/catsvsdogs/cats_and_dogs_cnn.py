@@ -1,25 +1,18 @@
 #!/usr/bin/python3
 # coding: utf-8
 
-# # Распознавание собак и кошек на изображениях с помощью сверточной нейронной сети
+# # Распознавание собак и кошек на изображениях с помощью свёрточной нейронной сети
 # 
 # **Источник данных** - соревнования Kaggle [Dogs vs. Cats](https://www.kaggle.com/c/dogs-vs-cats/data).
 # 
-# Для распознавания используется сверточная нейронная сеть.
+# Для распознавания используется свёрточная нейронная сеть.
 # 
 # Перед использованием необходимо скачать и подготовить данные для обучения, проверки и тестирования. Можно использовать пример в ноутбуке data_preparation
-
-# In[1]:
-
 
 from tensorflow.python.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.python.keras.models import Sequential
 from tensorflow.python.keras.layers import Conv2D, MaxPooling2D
 from tensorflow.python.keras.layers import Activation, Dropout, Flatten, Dense
-
-
-# In[2]:
-
 
 # Каталог с данными для обучения
 train_dir = 'train'
@@ -43,8 +36,7 @@ nb_validation_samples = 3750
 # Количество изображений для тестирования
 nb_test_samples = 3750
 
-
-# ## Создаем сверточную нейронную сеть
+# ## Создаем свёрточную нейронную сеть
 # 
 # **Архитектура сети**
 # 1. Слой свертки, размер ядра 3х3, количество карт признаков - 32 шт., функция активации ReLU.
@@ -59,9 +51,6 @@ nb_test_samples = 3750
 # 10. Выходной слой, 1 нейрон, функция активации sigmoid
 # 
 # Слои с 1 по 6 используются для выделения важных признаков в изображении, а слои с 7 по 10 - для классификации.
-
-# In[3]:
-
 
 model = Sequential()
 model.add(Conv2D(32, (3, 3), input_shape=input_shape))
@@ -83,31 +72,19 @@ model.add(Dropout(0.5))
 model.add(Dense(1))
 model.add(Activation('sigmoid'))
 
-
 # Компилируем нейронную сеть
-
-# In[4]:
-
 
 model.compile(loss='binary_crossentropy',
               optimizer='adam',
               metrics=['accuracy'])
 
-
 # # Создаем генератор изображений
 # 
 # Генератор изображений создается на основе класса ImageDataGenerator. Генератор делит значения всех пикселов изображения на 255.
 
-# In[5]:
-
-
 datagen = ImageDataGenerator(rescale=1. / 255)
 
-
 # Генератор данных для обучения на основе изображений из каталога
-
-# In[6]:
-
 
 train_generator = datagen.flow_from_directory(
     train_dir,
@@ -115,11 +92,7 @@ train_generator = datagen.flow_from_directory(
     batch_size=batch_size,
     class_mode='binary')
 
-
 # Генератор данных для проверки на основе изображений из каталога
-
-# In[7]:
-
 
 val_generator = datagen.flow_from_directory(
     val_dir,
@@ -127,11 +100,7 @@ val_generator = datagen.flow_from_directory(
     batch_size=batch_size,
     class_mode='binary')
 
-
 # Генератор данных для тестирования на основе изображений из каталога
-
-# In[8]:
-
 
 test_generator = datagen.flow_from_directory(
     test_dir,
@@ -139,15 +108,11 @@ test_generator = datagen.flow_from_directory(
     batch_size=batch_size,
     class_mode='binary')
 
-
 # # Обучаем модель с использованием генераторов
 # 
 # train_generator - генератор данных для обучения
 # 
 # validation_data - генератор данных для проверки
-
-# In[ ]:
-
 
 model.fit_generator(
     train_generator,
@@ -156,23 +121,8 @@ model.fit_generator(
     validation_data=val_generator,
     validation_steps=nb_validation_samples // batch_size)
 
-
 # # Оцениваем качество работы сети с помощью генератора
-
-# In[31]:
-
 
 scores = model.evaluate_generator(test_generator, nb_test_samples // batch_size)
 
-
-# In[32]:
-
-
 print("Аккуратность на тестовых данных: %.2f%%" % (scores[1]*100))
-
-
-# In[ ]:
-
-
-
-
