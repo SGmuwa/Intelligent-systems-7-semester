@@ -9,8 +9,11 @@ if not os.path.exists("train"):
   fantasy_zip = zipfile.ZipFile('/tmp/train.zip')
  except zipfile.BadZipFile:
   with open('/tmp/train.zip', 'r') as f:
-   print('bad url!', f.read())
+   print('bad zip!', f.read())
   os.remove('/tmp/train.zip')
   exit()
  fantasy_zip.extractall('train')
  fantasy_zip.close()
+from pathlib import Path
+for path in Path('train').rglob('*'):
+ print(path)
