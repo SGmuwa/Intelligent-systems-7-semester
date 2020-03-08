@@ -52,75 +52,80 @@ nb_test_samples = 3750
 # 
 # Слои с 1 по 6 используются для выделения важных признаков в изображении, а слои с 7 по 10 - для классификации.
 
-model = Sequential()
-model.add(Conv2D(32, (3, 3), input_shape=input_shape))
-model.add(Activation('relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
+import os
+if not os.path.exists('dense.h5'):
+ model = Sequential()
+ model.add(Conv2D(32, (3, 3), input_shape=input_shape))
+ model.add(Activation('relu'))
+ model.add(MaxPooling2D(pool_size=(2, 2)))
+ 
+ model.add(Conv2D(32, (3, 3)))
+ model.add(Activation('relu'))
+ model.add(MaxPooling2D(pool_size=(2, 2)))
+ 
+ model.add(Conv2D(64, (3, 3)))
+ model.add(Activation('relu'))
+ model.add(MaxPooling2D(pool_size=(2, 2)))
+ 
+ model.add(Flatten())
+ model.add(Dense(64))
+ model.add(Activation('relu'))
+ model.add(Dropout(0.5))
+ model.add(Dense(1))
+ model.add(Activation('sigmoid'))
+ 
+ # Компилируем нейронную сеть
+ 
+ model.compile(loss='binary_crossentropy',
+               optimizer='adam',
+               metrics=['accuracy'])
+ 
+ # # Создаем генератор изображений
+ # 
+ # Генератор изображений создается на основе класса ImageDataGenerator. Генератор делит значения всех пикселов изображения на 255.
+ 
+ datagen = ImageDataGenerator(rescale=1. / 255)
+ 
+ # Генератор данных для обучения на основе изображений из каталога
+ 
+ train_generator = datagen.flow_from_directory(
+     train_dir,
+     target_size=(img_width, img_height),
+     batch_size=batch_size,
+     class_mode='binary')
+ 
+ # Генератор данных для проверки на основе изображений из каталога
+ 
+ val_generator = datagen.flow_from_directory(
+     val_dir,
+     target_size=(img_width, img_height),
+     batch_size=batch_size,
+     class_mode='binary')
+ 
+ # Генератор данных для тестирования на основе изображений из каталога
+ 
+ test_generator = datagen.flow_from_directory(
+     test_dir,
+     target_size=(img_width, img_height),
+     batch_size=batch_size,
+     class_mode='binary')
+ 
+ # # Обучаем модель с использованием генераторов
+ # 
+ # train_generator - генератор данных для обучения
+ # 
+ # validation_data - генератор данных для проверки
+ 
+ model.fit_generator(
+     train_generator,
+     steps_per_epoch=nb_train_samples // batch_size,
+     epochs=epochs,
+     validation_data=val_generator,
+     validation_steps=nb_validation_samples // batch_size)
 
-model.add(Conv2D(32, (3, 3)))
-model.add(Activation('relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
-
-model.add(Conv2D(64, (3, 3)))
-model.add(Activation('relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
-
-model.add(Flatten())
-model.add(Dense(64))
-model.add(Activation('relu'))
-model.add(Dropout(0.5))
-model.add(Dense(1))
-model.add(Activation('sigmoid'))
-
-# Компилируем нейронную сеть
-
-model.compile(loss='binary_crossentropy',
-              optimizer='adam',
-              metrics=['accuracy'])
-
-# # Создаем генератор изображений
-# 
-# Генератор изображений создается на основе класса ImageDataGenerator. Генератор делит значения всех пикселов изображения на 255.
-
-datagen = ImageDataGenerator(rescale=1. / 255)
-
-# Генератор данных для обучения на основе изображений из каталога
-
-train_generator = datagen.flow_from_directory(
-    train_dir,
-    target_size=(img_width, img_height),
-    batch_size=batch_size,
-    class_mode='binary')
-
-# Генератор данных для проверки на основе изображений из каталога
-
-val_generator = datagen.flow_from_directory(
-    val_dir,
-    target_size=(img_width, img_height),
-    batch_size=batch_size,
-    class_mode='binary')
-
-# Генератор данных для тестирования на основе изображений из каталога
-
-test_generator = datagen.flow_from_directory(
-    test_dir,
-    target_size=(img_width, img_height),
-    batch_size=batch_size,
-    class_mode='binary')
-
-# # Обучаем модель с использованием генераторов
-# 
-# train_generator - генератор данных для обучения
-# 
-# validation_data - генератор данных для проверки
-
-model.fit_generator(
-    train_generator,
-    steps_per_epoch=nb_train_samples // batch_size,
-    epochs=epochs,
-    validation_data=val_generator,
-    validation_steps=nb_validation_samples // batch_size)
-
+ model.save('dense.h5')
+else:
+ model = load_model('dense.h5')
 # # Оцениваем качество работы сети с помощью генератора
 
 scores = model.evaluate_generator(test_generator, nb_test_samples // batch_size)
