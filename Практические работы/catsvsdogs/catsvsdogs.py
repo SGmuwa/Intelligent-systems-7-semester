@@ -5,6 +5,6 @@ if not os.path.exists("train"):
   from urllib.request import urlretrieve
   urlretrieve(input("url to zip for train: "), "/tmp/train.zip")
  import zipfile
- fantasy_zip = zipfile.ZipFile('train.zip')
+ fantasy_zip = zipfile.ZipFile('/tmp/train.zip')
  fantasy_zip.extractall('train')
  fantasy_zip.close()
