@@ -136,4 +136,4 @@ scores = model.evaluate_generator(test_generator, nb_test_samples // batch_size)
 print("Аккуратность на тестовых данных: %.2f%%" % (scores[1]*100))
 
 from img_recognizer import recognize_img
-recognize_img(model, ['cat', 'dog'])
+recognize_img(model, ['cat', 'dog'], input_shape, 'rgb')

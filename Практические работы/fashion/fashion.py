@@ -53,4 +53,4 @@ print('np.argmax(y_train[0])', np.argmax(y_train[0]))
 print('scores[1]: ', model.evaluate(x_test, y_test, verbose=1)[1])
 
 from img_recognizer import recognize_img
-recognize_img(model, classes)
+recognize_img(model, classes, (28, 28), "grayscale")

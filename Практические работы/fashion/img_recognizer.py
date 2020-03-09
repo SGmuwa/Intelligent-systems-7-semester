@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-def recognize_img(model, classes):
+def recognize_img(model, classes, target_size=None, color_mode='rgb'):
  from pathlib import Path
  for path in Path().rglob('*.jpg'):
   print(path)
@@ -10,7 +10,7 @@ def recognize_img(model, classes):
   urlretrieve(img_path, "/tmp/.jpg")
   img_path = "/tmp/.jpg"
  from tensorflow.keras.preprocessing import image
- img = image.load_img(img_path, target_size=(28, 28), color_mode = "grayscale")
+ img = image.load_img(img_path, target_size=target_size, color_mode=color_mode)
  
  # Преобразуем картинку в массив
  x = image.img_to_array(img)
