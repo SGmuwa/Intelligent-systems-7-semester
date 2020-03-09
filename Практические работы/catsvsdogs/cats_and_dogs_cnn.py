@@ -36,6 +36,13 @@ nb_validation_samples = 3750
 # Количество изображений для тестирования
 nb_test_samples = 3750
 
+ 
+# # Создаем генератор изображений
+# 
+# Генератор изображений создается на основе класса ImageDataGenerator. Генератор делит значения всех пикселов изображения на 255.
+ 
+datagen = ImageDataGenerator(rescale=1. / 255)
+
 # ## Создаем свёрточную нейронную сеть
 # 
 # **Архитектура сети**
@@ -80,12 +87,6 @@ if not os.path.exists('dense.h5'):
                optimizer='adam',
                metrics=['accuracy'])
  
- # # Создаем генератор изображений
- # 
- # Генератор изображений создается на основе класса ImageDataGenerator. Генератор делит значения всех пикселов изображения на 255.
- 
- datagen = ImageDataGenerator(rescale=1. / 255)
- 
  # Генератор данных для обучения на основе изображений из каталога
  
  train_generator = datagen.flow_from_directory(
@@ -98,14 +99,6 @@ if not os.path.exists('dense.h5'):
  
  val_generator = datagen.flow_from_directory(
      val_dir,
-     target_size=(img_width, img_height),
-     batch_size=batch_size,
-     class_mode='binary')
- 
- # Генератор данных для тестирования на основе изображений из каталога
- 
- test_generator = datagen.flow_from_directory(
-     test_dir,
      target_size=(img_width, img_height),
      batch_size=batch_size,
      class_mode='binary')
@@ -128,6 +121,15 @@ else:
  from tensorflow.keras.models import load_model
  model = load_model('dense.h5')
 # # Оцениваем качество работы сети с помощью генератора
+
+ 
+# Генератор данных для тестирования на основе изображений из каталога
+ 
+test_generator = datagen.flow_from_directory(
+    test_dir,
+    target_size=(img_width, img_height),
+    batch_size=batch_size,
+    class_mode='binary')
 
 scores = model.evaluate_generator(test_generator, nb_test_samples // batch_size)
 
