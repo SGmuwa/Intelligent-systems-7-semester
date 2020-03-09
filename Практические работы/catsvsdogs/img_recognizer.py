@@ -29,6 +29,7 @@ def recognize_img(model, classes):
  
  print(prediction)
  
+ import numpy as np
  prediction = np.argmax(prediction)
  print("Номер класса:", prediction)
  print("Название класса:", classes[prediction])
