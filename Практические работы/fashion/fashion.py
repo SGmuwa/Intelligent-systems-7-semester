@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 from tensorflow.keras.datasets import fashion_mnist
-from tensorflow.keras.preprocessing import image
 from tensorflow.keras.models import load_model
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense

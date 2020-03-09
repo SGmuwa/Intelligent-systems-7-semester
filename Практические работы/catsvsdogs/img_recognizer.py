@@ -9,6 +9,7 @@ def recognize_img(model, classes):
   from urllib.request import urlretrieve
   urlretrieve(img_path, "/tmp/.jpg")
   img_path = "/tmp/.jpg"
+ from tensorflow.keras.preprocessing import image
  img = image.load_img(img_path, target_size=(28, 28), color_mode = "grayscale")
  
  # Преобразуем картинку в массив
