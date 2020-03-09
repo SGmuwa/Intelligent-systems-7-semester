@@ -21,11 +21,11 @@ def recognize_img(model, classes):
  # Нормализуем изображение
  x /= 255
  
- """Запускаем распознавание"""
+ print("Запускаем распознавание")
  
  prediction = model.predict(x)
  
- """Результаты распознавания"""
+ print("Результаты распознавания")
  
  print(prediction)
  
