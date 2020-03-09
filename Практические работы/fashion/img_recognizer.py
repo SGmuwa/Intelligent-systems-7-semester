@@ -5,7 +5,7 @@ def recognize_img(model, classes):
   print(path)
  img_path = input('image path or url: ')
  import re
- if re.search(r'https?://', img_path).group(0) is not None:
+ if re.search(r'https?://', img_path) is not None:
   from urllib.request import urlretrieve
   urlretrieve(img_path, "/tmp/.jpg")
   img_path = "/tmp/.jpg"
