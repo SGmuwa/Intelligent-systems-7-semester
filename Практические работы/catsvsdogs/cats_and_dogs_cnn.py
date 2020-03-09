@@ -125,6 +125,7 @@ if not os.path.exists('dense.h5'):
 
  model.save('dense.h5')
 else:
+ from tensorflow.keras.models import load_model
  model = load_model('dense.h5')
 # # Оцениваем качество работы сети с помощью генератора
 
