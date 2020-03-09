@@ -15,7 +15,7 @@ def recognize_img(model, classes, target_size=None, color_mode='rgb'):
  # Преобразуем картинку в массив
  x = image.img_to_array(img)
  # Меняем форму массива в плоский вектор
- x = x.reshape(1, 784)
+ x = x.reshape(1, target_size[0]*target_size[1])
  # Инвертируем изображение
  x = 255 - x
  # Нормализуем изображение
