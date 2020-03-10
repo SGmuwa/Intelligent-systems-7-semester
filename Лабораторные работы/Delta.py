@@ -1,16 +1,18 @@
 ﻿# python3 Delta.py
-# To add a new cell, type '# %%'
-# To add a new markdown cell, type '# %% [markdown]'
-# %%
 # Алгоритм обучения Розенблатта (дельта-правило)
+
+
 class Neuron:
     def __init__(self):
         self.inputs = {}
         self.value = 0
+
     def setValue(self, value):
         self.value = value
-    def addInput(self, Neuron, w = 0):
+
+    def addInput(self, Neuron, w=0):
         self.inputs[Neuron] = w
+
     def get(self):
         if len(self.inputs) == 0:
             return self.value
@@ -18,170 +20,173 @@ class Neuron:
         for n, w in self.inputs.items():
             self.value += n.get() * w
         return 1 if self.value > 0 else -1
+
     def getBool(self):
         return self.get() > 0
+
     def modificationEducation(self, toAddW):
         for neuron in self.inputs.keys():
             self.inputs[neuron] += toAddW * neuron.get()
             neuron.modificationEducation(toAddW)
 
+
 answers = {
-    'A' : 
+    'A':
         "⬜⬛⬛⬛⬜" +
         "⬛⬜⬜⬛⬜" +
         "⬛⬜⬜⬛⬜" +
         "⬛⬛⬛⬛⬜" +
         "⬛⬜⬜⬛⬜",
-    'B' : 
+    'B':
         "⬛⬛⬛⬜⬜" +
         "⬛⬜⬜⬛⬜" +
-        "⬛⬛⬛⬜⬜" + 
+        "⬛⬛⬛⬜⬜" +
         "⬛⬜⬜⬛⬜" +
         "⬛⬛⬛⬜⬜",
-    'C' :
+    'C':
         "⬜⬛⬛⬜⬜" +
         "⬛⬜⬜⬛⬜" +
         "⬛⬜⬜⬜⬜" +
         "⬛⬜⬜⬛⬜" +
         "⬜⬛⬛⬜⬜",
-    'D' :
+    'D':
         "⬛⬛⬛⬜⬜" +
         "⬛⬜⬜⬛⬜" +
         "⬛⬜⬜⬛⬜" +
         "⬛⬜⬜⬛⬜" +
         "⬛⬛⬛⬜⬜",
-    'E' :
+    'E':
         "⬛⬛⬛⬛⬜" +
         "⬛⬜⬜⬜⬜" +
         "⬛⬛⬛⬛⬜" +
         "⬛⬜⬜⬜⬜" +
         "⬛⬛⬛⬛⬜",
-    'F' :
+    'F':
         "⬛⬛⬛⬛⬜" +
         "⬛⬜⬜⬜⬜" +
         "⬛⬛⬛⬜⬜" +
         "⬛⬜⬜⬜⬜" +
         "⬛⬜⬜⬜⬜",
-    'G' :
+    'G':
         "⬜⬛⬛⬛⬜" +
         "⬛⬜⬜⬜⬜" +
         "⬛⬜⬛⬛⬜" +
         "⬛⬜⬜⬛⬜" +
         "⬜⬛⬛⬜⬜",
-    'H' :
+    'H':
         "⬛⬜⬜⬛⬜" +
         "⬛⬜⬜⬛⬜" +
         "⬛⬛⬛⬛⬜" +
         "⬛⬜⬜⬛⬜" +
         "⬛⬜⬜⬛⬜",
-    'I' :
+    'I':
         "⬛⬛⬛⬜⬜" +
         "⬜⬛⬜⬜⬜" +
         "⬜⬛⬜⬜⬜" +
         "⬜⬛⬜⬜⬜" +
         "⬛⬛⬛⬜⬜",
-    'J' :
+    'J':
         "⬜⬛⬛⬛⬜" +
         "⬜⬜⬜⬛⬜" +
         "⬜⬜⬜⬛⬜" +
         "⬛⬜⬜⬛⬜" +
         "⬜⬛⬛⬜⬜",
-    'K' :
+    'K':
         "⬛⬜⬜⬛⬜" +
         "⬛⬜⬛⬜⬜" +
         "⬛⬛⬜⬜⬜" +
         "⬛⬜⬛⬜⬜" +
         "⬛⬜⬜⬛⬜",
-    'L' :
+    'L':
         "⬛⬜⬜⬜⬜" +
         "⬛⬜⬜⬜⬜" +
         "⬛⬜⬜⬜⬜" +
         "⬛⬜⬜⬜⬜" +
         "⬛⬛⬛⬛⬜",
-    'M' :
+    'M':
         "⬛⬜⬜⬜⬛" +
         "⬛⬛⬜⬛⬛" +
         "⬛⬜⬛⬜⬛" +
         "⬛⬜⬜⬜⬛" +
         "⬛⬜⬜⬜⬛",
-    'N' :
+    'N':
         "⬛⬜⬜⬛⬜" +
         "⬛⬛⬜⬛⬜" +
         "⬛⬜⬛⬛⬜" +
         "⬛⬜⬜⬛⬜" +
         "⬛⬜⬜⬛⬜",
-    'O' :
+    'O':
         "⬜⬛⬛⬛⬜" +
         "⬛⬜⬜⬛⬜" +
         "⬛⬜⬜⬛⬜" +
         "⬛⬜⬜⬛⬜" +
         "⬜⬛⬛⬜⬜",
-    'P' :
+    'P':
         "⬛⬛⬛⬜⬜" +
         "⬛⬜⬜⬛⬜" +
         "⬛⬛⬛⬜⬜" +
         "⬛⬜⬜⬜⬜" +
         "⬛⬜⬜⬜⬜",
-    'Q' :
+    'Q':
         "⬜⬛⬛⬜⬜" +
         "⬛⬜⬜⬛⬜" +
         "⬛⬜⬜⬛⬜" +
         "⬛⬜⬜⬛⬜" +
         "⬜⬛⬛⬛⬛",
-    'R' :
+    'R':
         "⬛⬛⬛⬜⬜" +
         "⬛⬜⬜⬛⬜" +
         "⬛⬛⬛⬜⬜" +
         "⬛⬜⬛⬜⬜" +
         "⬛⬜⬜⬛⬜",
-    'S' :
+    'S':
         "⬜⬛⬛⬛⬜" +
         "⬛⬜⬜⬜⬜" +
         "⬜⬛⬛⬜⬜" +
         "⬜⬜⬜⬛⬜" +
         "⬛⬛⬛⬜⬜",
-    'T' :
+    'T':
         "⬛⬛⬛⬛⬛" +
         "⬜⬜⬛⬜⬜" +
         "⬜⬜⬛⬜⬜" +
         "⬜⬜⬛⬜⬜" +
         "⬜⬜⬛⬜⬜",
-    'U' :
+    'U':
         "⬛⬜⬜⬛⬜" +
         "⬛⬜⬜⬛⬜" +
         "⬛⬜⬜⬛⬜" +
         "⬛⬜⬜⬛⬜" +
         "⬜⬛⬛⬜⬜",
-    'V' :
+    'V':
         "⬛⬜⬜⬛⬜" +
         "⬛⬜⬜⬛⬜" +
         "⬛⬜⬜⬛⬜" +
         "⬜⬛⬜⬛⬜" +
         "⬜⬜⬛⬜⬜",
-    'W' :
+    'W':
         "⬛⬜⬛⬜⬛" +
         "⬛⬜⬛⬜⬛" +
         "⬛⬜⬛⬜⬛" +
         "⬛⬜⬛⬜⬛" +
         "⬜⬛⬜⬛⬜",
-    'X' :
+    'X':
         "⬛⬜⬜⬜⬛" +
         "⬜⬛⬜⬛⬜" +
         "⬜⬜⬛⬜⬜" +
         "⬜⬛⬜⬛⬜" +
         "⬛⬜⬜⬜⬛",
-    'Y' :
+    'Y':
         "⬛⬜⬜⬜⬛" +
         "⬜⬛⬜⬛⬜" +
         "⬜⬜⬛⬜⬜" +
         "⬜⬜⬛⬜⬜" +
         "⬜⬜⬛⬜⬜",
-    'Z' :
+    'Z':
         "⬛⬛⬛⬛⬜" +
         "⬜⬜⬜⬛⬜" +
         "⬜⬛⬛⬜⬜" +
         "⬛⬜⬜⬜⬜" +
-        "⬛⬛⬛⬛⬜"#,
+        "⬛⬛⬛⬛⬜"  # ,
     # '?' :
     #     "⬜⬜⬜⬜⬜" +
     #     "⬜⬜⬜⬜⬜" +
@@ -190,15 +195,19 @@ answers = {
     #     "⬜⬜⬜⬜⬜",
 }
 
+
 def convertStringToIntArray(string):
     return [(1 if s == '⬛' else -1) for s in string]
 
 # Конвектирует string в Array<int>.
+
+
 def convertInputFromStringToIntArrays(inputDataDictionary):
     outputData = {}
     for key, string in inputDataDictionary.items():
         outputData[key] = convertStringToIntArray(string)
     return outputData
+
 
 answers = convertInputFromStringToIntArrays(answers)
 
@@ -212,6 +221,8 @@ for char, array in answers.items():
 
 # image: Array<int>
 # inputNeurons: Array<Neuron>
+
+
 def setImageToInput(inputNeurons, image):
     for (n, i) in zip(inputNeurons, image):
         n.setValue(i)
@@ -220,6 +231,8 @@ def setImageToInput(inputNeurons, image):
 # inputNeurons: Array<Neuron>
 # outputNeurons: Dictionary<char, Neuron>
 # inputImage: Array<int>
+
+
 def getAnswerFromNet(inputNeurons, outputNeurons, inputImage):
     setImageToInput(inputNeurons, inputImage)
     outputKeys = set()
@@ -228,7 +241,9 @@ def getAnswerFromNet(inputNeurons, outputNeurons, inputImage):
             outputKeys.add(key)
     return outputKeys
 
+
 print(getAnswerFromNet(neurons_input, neurons_output, answers['A']))
+
 
 def education(neurons_input, neurons_output, answers, speed, accuracyNeed):
     good = 0
@@ -247,6 +262,7 @@ def education(neurons_input, neurons_output, answers, speed, accuracyNeed):
                 else:
                     neuronOutput.modificationEducation(speed * e)
         print(good/float(countAll), 'good', good, 'countAll', countAll)
+
 
 education(neurons_input, neurons_output, answers, 0.0000001, 0.99)
 for key, answerArray in answers.items():
