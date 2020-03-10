@@ -15,6 +15,7 @@ def recognize_img(model, classes, target_size=None, color_mode='rgb'):
  # Преобразуем картинку в массив
  x = image.img_to_array(img)
  # Меняем форму массива в плоский вектор
+ import numpy as np
  x = np.expand_dims(x, axis=0)
  # Нормализуем изображение
  x /= 255.
@@ -27,7 +28,6 @@ def recognize_img(model, classes, target_size=None, color_mode='rgb'):
  
  print(prediction)
  
- import numpy as np
  prediction = np.argmax(prediction)
  print("Номер класса:", prediction)
  print("Название класса:", classes[prediction])
