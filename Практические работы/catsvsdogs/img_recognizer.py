@@ -33,6 +33,6 @@ def recognize_img(model, classes, target_size=None, color_mode='rgb'):
   
   print(prediction)
   
-  prediction = np.argmax(prediction)
+  prediction = 1 if prediction[0][0] >= 0.5 else 0
   print("Номер класса:", prediction)
   print("Название класса:", classes[prediction])
