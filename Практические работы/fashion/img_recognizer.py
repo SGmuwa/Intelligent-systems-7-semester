@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-def recognize_img(model, classes, target_size=None, color_mode='rgb'):
+def recognize_img(model, classes, invert=False, target_size=None, color_mode='rgb'):
  from pathlib import Path
  for path in Path().rglob('*.jpg'):
   print(path)
@@ -15,9 +15,10 @@ def recognize_img(model, classes, target_size=None, color_mode='rgb'):
  # Преобразуем картинку в массив
  x = image.img_to_array(img)
  # Меняем форму массива в плоский вектор
- x = x.reshape(1, target_size[0]*target_size[1])
- # Инвертируем изображение
- x = 255 - x
+ x = x.reshape(3 if 'rgb' else 1, target_size[0]*target_size[1])
+ if invert:
+  # Инвертируем изображение
+  x = 255 - x
  # Нормализуем изображение
  x /= 255
  
