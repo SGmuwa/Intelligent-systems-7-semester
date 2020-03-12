@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# coding: utf-8
+# Метод обратного распространения ошибки
 
 import numpy as np
 import sys
