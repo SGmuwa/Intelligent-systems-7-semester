@@ -39,35 +39,42 @@ class HopfieldNetwork:
         t = 1
         signum_func_vectorize = np.vectorize(self.signum_func)
         td = np.array(td).transpose()
-        self._print_(t-1, td)
+        td = np.array([td])
+        self._print_(t-1, td[-1])
         while(True):
-            td_temp = signum_func_vectorize(np.dot(self.weights, td))
+            td_temp = signum_func_vectorize(np.dot(self.weights, td[-1]))
             if(0 in td_temp):
                 j, z = np.where(td_temp == 0)
                 if (j.size and z.size) != 0:
                     for m in range(j.size):
-                        td_temp[j][z] = td[j][z]
-            if(np.array_equal(td, td_temp)):
-                return td
+                        td_temp[j][z] = td[-1][j][z]
+            if is_in(td_temp, td):
+                return td_temp
             else:
-                td = td_temp
+                td = np.vstack((td, td_temp))
             self._print_(t, td_temp)
             t += 1
-        self._print_(t, td)
+        self._print_(t, td[-1])
 
     def prediction(self, test_data):
         print(test_data)
         for el in test_data:
+            print('--')
             self._pred(el)
 
     def _print_(self, t, data):
         print('t =', t)
         for i in range(0, data.size, self.w_input):
             l = data[i:i+self.w_input]
-            l = [" " if j == -1 else "⬛" for j in l]
+            l = ["⬜" if j == -1 else "⬛" for j in l]
             print(''.join(l))
         print("\n")
 
+def is_in(list, lists):
+    for l in lists:
+        if np.array_equal(l, list):
+            return True
+    return False
 
 # ⬜⬛
 answers = [
@@ -102,6 +109,16 @@ answers = [
     "⬜⬜⬜⬜⬜⬜⬜",
 
     "⬜⬜⬜⬜⬜⬜⬜\n" +
+    "⬜⬛⬛⬛⬛⬛⬜\n" +
+    "⬜⬜⬜⬜⬜⬛⬜\n" +
+    "⬜⬜⬜⬜⬜⬛⬜\n" +
+    "⬜⬛⬛⬛⬛⬛⬜\n" +
+    "⬜⬜⬜⬜⬜⬛⬜\n" +
+    "⬜⬜⬜⬜⬜⬛⬜\n" +
+    "⬜⬛⬛⬛⬛⬛⬜\n" +
+    "⬜⬜⬜⬜⬜⬜⬜",
+
+    "⬜⬜⬜⬜⬜⬜⬜\n" +
     "⬜⬛⬜⬜⬜⬛⬜\n" +
     "⬜⬛⬜⬜⬜⬛⬜\n" +
     "⬜⬛⬜⬜⬜⬛⬜\n" +
@@ -125,7 +142,14 @@ answers = [
     "⬜⬛⬛⬛⬛⬛⬜\n" +
     "⬜⬛⬜⬜⬜⬜⬜\n" +
     "⬜⬛⬜⬜⬜⬜⬜\n" +
-    "⬜⬛⬛⬛⬛⬛⬜
+    "⬜⬛⬛⬛⬛⬛⬜\n" +
+    "⬜⬛⬜⬜⬜⬛⬜\n" +
+    "⬜⬛⬜⬜⬜⬛⬜\n" +
+    "⬜⬛⬛⬛⬛⬛⬜\n" +
+    "⬜⬜⬜⬜⬜⬜⬜"
+]
+
+tests = [
     #1:
     "⬛⬜⬜⬜⬜⬜⬜\n" +
     "⬛⬛⬛⬛⬛⬜⬜\n" +
@@ -155,7 +179,37 @@ answers = [
     "⬜⬜⬜⬛⬜⬛⬜\n" +
     "⬜⬜⬛⬜⬜⬛⬜\n" +
     "⬜⬜⬜⬜⬜⬛⬜\n" +
-    "⬜⬜⬜⬜⬜⬜⬜"
+    "⬜⬜⬜⬜⬜⬜⬜",
+    #?:
+    "⬜⬜⬜⬜⬜⬜⬜\n" +
+    "⬜⬜⬛⬜⬛⬜⬜\n" +
+    "⬜⬛⬜⬜⬜⬛⬜\n" +
+    "⬜⬜⬛⬜⬛⬜⬜\n" +
+    "⬜⬛⬜⬜⬜⬛⬜\n" +
+    "⬜⬜⬛⬜⬛⬜⬜\n" +
+    "⬜⬛⬜⬜⬜⬛⬜\n" +
+    "⬜⬜⬛⬜⬛⬜⬜\n" +
+    "⬜⬜⬜⬜⬜⬜⬜",
+    #?:
+    "⬜⬜⬜⬜⬜⬜⬜\n" +
+    "⬜⬜⬜⬜⬜⬜⬜\n" +
+    "⬜⬜⬜⬜⬜⬜⬜\n" +
+    "⬜⬜⬜⬜⬜⬜⬜\n" +
+    "⬜⬜⬜⬜⬜⬜⬜\n" +
+    "⬜⬜⬜⬜⬜⬜⬜\n" +
+    "⬜⬜⬜⬜⬜⬜⬜\n" +
+    "⬜⬜⬜⬜⬜⬜⬜\n" +
+    "⬜⬜⬜⬜⬜⬜⬜",
+    #?:
+    "⬛⬜⬛⬜⬛⬜⬛\n" +
+    "⬜⬛⬜⬛⬜⬛⬜\n" +
+    "⬛⬜⬛⬜⬛⬜⬛\n" +
+    "⬜⬛⬜⬛⬜⬛⬜\n" +
+    "⬛⬜⬛⬜⬛⬜⬛\n" +
+    "⬜⬛⬜⬛⬜⬛⬜\n" +
+    "⬛⬜⬛⬜⬛⬜⬛\n" +
+    "⬜⬛⬜⬛⬜⬛⬜\n" +
+    "⬛⬜⬛⬜⬛⬜⬛"
 ]
 
 def convertStringToIntArray(string):
