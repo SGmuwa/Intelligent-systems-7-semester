@@ -12,14 +12,10 @@ class HopfieldNetwork:
 
     def _calculate_pseudoinverse_matrix(self, F):
         '''Вычисление псевдоинверсной матрицы'''
-        F_t = F.transpose()
+        F_t = F.values()
         M_inv = np.linalg.inv((np.dot(F_t, F)))
         F_plus = np.dot(M_inv, F_t)
         return F_plus
-
-    def _reshape(self, data):
-        data = np.array(data).transpose()
-        return data
 
     def signum_func(self, net):
         if net > 0:
@@ -30,7 +26,6 @@ class HopfieldNetwork:
             return 0  # означает, что нужно сохранить предыдущее значение выхода
 
     def fit(self, train_data):
-        train_data = self._reshape(train_data)
         train_data_plus = self._calculate_pseudoinverse_matrix(train_data)
         self.weights = np.dot(train_data, train_data_plus)
         np.fill_diagonal(self.weights, 0)
@@ -60,16 +55,7 @@ class HopfieldNetwork:
         for el in test_data:
             self._pred(el)
 
-    def _print_(self, t, data):
-        print(str(t)+"  ")
-        for i in range(0, data.size, self.w_input):
-            l = data[i:i+self.w_input]
-            l = [" " if j == -1 else "@" for j in l]
-            print(l)
-        print("\n")
 
-
-# ⬜⬛
 answers = {
     0:
     "⬜⬜⬜⬜⬜⬜⬜" +
@@ -166,8 +152,9 @@ tests = {
     "⬜⬜⬜⬜⬜⬜⬜"
 }
 
+
 def convertStringToIntArray(string):
-    return [(1 if s == '⬛' else -1) for s in string]
+    return np.array([(1 if s == '⬛' else -1) for s in string])
 
 # Конвектирует string в Array<int>.
 
@@ -178,57 +165,9 @@ def convertInputFromStringToIntArrays(inputDataDictionary):
         outputData[key] = convertStringToIntArray(string)
     return outputData
 
+
 answers = convertInputFromStringToIntArrays(answers)
 tests = convertInputFromStringToIntArrays(tests)
 
 model = HopfieldNetwork(w_input=7, h_input=9)
 model.fit(answers)
-
-
-a = np.array([[1], [0], [1]])
-b = np.array([[1], [0], [1]])
-np.array_equal(a, b)
-
-
-W = np.array([[1, 2, 3],
-              [4, 5, 6],
-              [7, 8, 9]])
-
-a = np.array([[1], [0], [1]])
-b = np.dot(W, a)
-print(b)
-
-
-b = np.array([[4], [10], [16], [4], [4]])
-
-if(4 in b):
-    print(True)
-    i, j = np.where(b == 100)
-    print(i, j)
-else:
-    print(False)
-
-
-W = np.array([[1, 2, 3],
-              [4, 5, 6],
-              [7, 8, 9]])
-np.fill_diagonal(W, 0)
-print(W)
-
-
-def signum_func(net):
-    if net > 0:
-        return 1
-    elif net < 0:
-        return -1
-    else:
-        return 0  # означает, что нужно сохранить предыдущее значение выхода
-
-
-signum_func_vectorize = np.vectorize(signum_func)
-
-
-b = np.array([[-1], [-1], [1], [1], [1]])
-
-s = signum_func_vectorize(b)
-print(s)
