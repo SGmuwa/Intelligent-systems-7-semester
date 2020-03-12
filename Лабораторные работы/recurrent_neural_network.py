@@ -61,11 +61,11 @@ class HopfieldNetwork:
             self._pred(el)
 
     def _print_(self, t, data):
-        print(str(t)+"  ")
+        print('t =', t)
         for i in range(0, data.size, self.w_input):
             l = data[i:i+self.w_input]
-            l = [" " if j == -1 else "@" for j in l]
-            print(l)
+            l = [" " if j == -1 else "⬛" for j in l]
+            print(''.join(l))
         print("\n")
 
 
@@ -125,14 +125,7 @@ answers = [
     "⬜⬛⬛⬛⬛⬛⬜\n" +
     "⬜⬛⬜⬜⬜⬜⬜\n" +
     "⬜⬛⬜⬜⬜⬜⬜\n" +
-    "⬜⬛⬛⬛⬛⬛⬜\n" +
-    "⬜⬛⬜⬜⬜⬛⬜\n" +
-    "⬜⬛⬜⬜⬜⬛⬜\n" +
-    "⬜⬛⬛⬛⬛⬛⬜\n" +
-    "⬜⬜⬜⬜⬜⬜⬜"
-]
-
-tests = [
+    "⬜⬛⬛⬛⬛⬛⬜
     #1:
     "⬛⬜⬜⬜⬜⬜⬜\n" +
     "⬛⬛⬛⬛⬛⬜⬜\n" +
@@ -182,4 +175,4 @@ tests_num = convertInputFromStringToIntArrays(tests)
 
 model = HopfieldNetwork(w_input=7, h_input=9)
 model.fit(answers_num)
-print(tests[model.prediction(tests_num[0])])
+model.prediction(tests_num)
