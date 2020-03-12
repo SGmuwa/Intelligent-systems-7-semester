@@ -1,6 +1,4 @@
-#!/usr/bin/env python
-# coding: utf-8
-
+# Кохонен
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -27,6 +25,7 @@ class Neuron:
 
 class SOM:
     """Self-Organizing Map — карта Кохонена"""
+
     def __init__(self, h_map, w_map, input_N, T, sigma=2.24):
         self.h_map = h_map
         self.w_map = w_map
@@ -154,27 +153,19 @@ train_data = [
     [0, 0, 1,  0, 1, 1, 1, 1, 0,  0, 1, 0, 0],
     [0, 0, 1,  0, 1, 1, 1, 0, 0,  0, 0, 0, 0]
 ]
-y = ["Голубь", "Курица", "Утка", "Гусь", "Сова", "Ястреб", "Орел", "Лиса",
-     "Собака", "Волк", "Кошка", "Тигр", "Лев", "Лошадь", "Зебра", "Корова"]
-
-a = 0.2
-test_data = train_data.copy()
-for i in range(len(test_data)):
-    l = [0 for j in range(len(test_data[i]))]
-    test_data[i] = [a if j == i else 0 for j in range(len(test_data))] + l
-test_data = np.array(test_data)
-print(test_data)
+y = [
+    "Голубь", "Курица", "Утка", "Гусь", "Сова", "Ястреб", "Орел", "Лиса",
+    "Собака", "Волк", "Кошка", "Тигр", "Лев", "Лошадь", "Зебра", "Корова"]
 
 
 for i in range(len(train_data)):
-    train_data[i] = [a if j == i else 0 for j in range(
+    train_data[i] = [0.2 if j == i else 0 for j in range(
         len(train_data))]+train_data[i]
 train_data = np.array(train_data)
 
 
 model.fit(train_data)
 map_res = model.predict(train_data)
-print(map_res)
 
 
 for i in range(len(map_res)):
@@ -186,36 +177,9 @@ for i in range(len(map_res)):
                 int_s = int(l[u])
                 map_res[i][j] += y[int_s]
         else:
-            map_res[i][j] = "   *   "
+            map_res[i][j] = "·"
 np.set_printoptions(linewidth=150)
 map_res = np.array(map_res)
-print(map_res)
-
-
-# # Гипперпараметры карты Кохонена
-
-
-# Как уменьшается скорость обучения
-# Показательный закон
-x = np.linspace(0, 100)
-y = 0.01 ** (x/100)
-
-plt.title("График зависимости входной переменной X от Y")  # заголовок
-plt.plot(x, y)  # построение графика
-plt.xlabel("x")  # ось абсцисс
-plt.ylabel("y")  # ось ординат
-plt.show()      # включение отображение сетки
-
-
-# Как уменьшается скорость обучения
-# Показательный закон
-x = np.linspace(0, 13)
-sigma = 2.24
-b = 1/(2*sigma**2)
-print(b, sigma**2)
-y = np.exp(-1*b*(x**2))
-plt.title("Как уменьшается скорость обучения")  # заголовок
-plt.plot(x, y)  # построение графика
-plt.xlabel("x")  # ось абсцисс
-plt.ylabel("y")  # ось ординат
-plt.show()      # включение отображение сетки
+max_len = max([len(str(e)) for r in map_res for e in r])
+for row in map_res:
+    print(*list(map('{{:>{length}}}'.format(length=max_len).format, row)))
