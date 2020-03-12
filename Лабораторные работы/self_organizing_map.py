@@ -26,6 +26,7 @@ class Neuron:
 
 
 class SOM:
+    """Self-Organizing Map — карта Кохонена"""
     def __init__(self, h_map, w_map, input_N, T, sigma=2.24):
         self.h_map = h_map
         self.w_map = w_map
