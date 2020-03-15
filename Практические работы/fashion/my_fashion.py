@@ -49,6 +49,7 @@ if '-c' in sys.argv or '-l' not in sys.argv:
  print(model.summary())
  history_scores = []
  i = 0
+ print('Start learning...')
  while True:
   model.fit(x_train, y_train, batch_size=60000, epochs=100, validation_split=0.2, verbose=0)
   history_scores.append(model.evaluate(x_test, y_test, verbose=0))
