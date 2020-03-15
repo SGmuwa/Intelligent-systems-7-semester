@@ -39,7 +39,7 @@ model = None
 if '-c' in sys.argv or not os.path.exists('my_dense.h5'):
  model = Sequential()
  model.add(Dense(784, input_dim=784, activation="sigmoid"))
- model.add(Dense(784, input_dim=784, activation="relu"))
+ model.add(Dense(784, activation="relu"))
  model.add(Dense(10, activation="softmax"))
  model.compile(
   loss="categorical_crossentropy",

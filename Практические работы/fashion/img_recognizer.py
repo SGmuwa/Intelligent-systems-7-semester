@@ -24,7 +24,7 @@ def recognize_img(model, classes, target_size=None, color_mode='rgb'):
   # Инвертируем изображение
   x = 255 - x
   # Нормализуем изображение
-  x /= 255.
+  x = x / 255. * 2 - 1.
   
   print("Запускаем распознавание")
   
