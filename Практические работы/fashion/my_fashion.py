@@ -48,13 +48,17 @@ if '-c' in sys.argv or not os.path.exists('my_dense.h5'):
   metrics=["accuracy"])
  print(model.summary())
  history_scores = []
+ i = 0
  while True:
-  model.fit(x_train, y_train, batch_size=60000, epochs=1, validation_split=0.2, verbose=1)
-  history_scores.append(model.evaluate(x_test, y_test, verbose=1))
+  history_fit = model.fit(x_train, y_train, batch_size=60000, epochs=100, validation_split=0.2, verbose=0).history
+  history_scores.append(model.evaluate(x_test, y_test, verbose=0))
   if history_scores[-1][0] > history_scores[0][0]:
    break
-  if len(history_scores) > 5:
+  if i % 10 == 0:
+   print('epoch: ', i, 'loss: ', history_scores[-1][0], 'accurate: ', history_scores[-1][1])
+  if len(history_scores) > 10:
    del history_scores[0]
+  i = i + 1
  model.save('my_dense.h5')
 else:
  model = load_model('my_dense.h5')
