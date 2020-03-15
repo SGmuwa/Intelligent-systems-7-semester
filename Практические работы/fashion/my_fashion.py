@@ -36,7 +36,7 @@ if '-h' in sys.argv:
 
 model = None
 
-if '-c' in sys.argv and '-l' not in sys.argv:
+if '-c' in sys.argv or '-l' not in sys.argv:
  model = Sequential()
  model.add(Dense(784, input_dim=784, activation="sigmoid"))
  model.add(Dense(784, activation="sigmoid"))
