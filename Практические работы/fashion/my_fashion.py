@@ -31,12 +31,12 @@ if '-p' in sys.argv:
  exit()
 
 if '-h' in sys.argv:
- print('learn fashion mnist.\n-h\thelp\n-p\tprint data\n-c\tcreate new model')
+ print('learn fashion mnist.\n-h\thelp\n-p\tprint data\n-c\tcreate new model\n-l\tload model.')
  exit()
 
 model = None
 
-if '-c' in sys.argv or not os.path.exists('my_dense.h5'):
+if '-c' in sys.argv and '-l' not in sys.argv:
  model = Sequential()
  model.add(Dense(784, input_dim=784, activation="sigmoid"))
  model.add(Dense(784, activation="sigmoid"))
@@ -58,6 +58,8 @@ if '-c' in sys.argv or not os.path.exists('my_dense.h5'):
   if len(history_scores) > 10:
    del history_scores[0]
   model.save('my_dense.h5')
+  from shutil import copyfile
+  copyfile('my_dense.h5', 'my_dense_backup.h5')
   i = i + 1
 else:
  model = load_model('my_dense.h5')
