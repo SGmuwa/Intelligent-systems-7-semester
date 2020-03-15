@@ -54,12 +54,11 @@ if '-c' in sys.argv or not os.path.exists('my_dense.h5'):
   history_scores.append(model.evaluate(x_test, y_test, verbose=0))
   if history_scores[-1][0] > history_scores[0][0]:
    break
-  if (i % 10) == 0:
-   print('epoch: ', i, 'loss: ', history_scores[-1][0], 'accurate: ', history_scores[-1][1])
+  print('epoch: ', i, 'loss: ', history_scores[-1][0], 'accurate: ', history_scores[-1][1])
   if len(history_scores) > 10:
    del history_scores[0]
+  model.save('my_dense.h5')
   i = i + 1
- model.save('my_dense.h5')
 else:
  model = load_model('my_dense.h5')
 
