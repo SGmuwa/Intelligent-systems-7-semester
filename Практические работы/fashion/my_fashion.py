@@ -37,12 +37,16 @@ if '-h' in sys.argv:
 model = None
 
 if '-c' in sys.argv or '-l' not in sys.argv:
- if os.path.exists('my_dense.h5'):
+ if os.path.exists('my_dense.h5') and os.path.exists('my_dense_backup.h5'):
   if os.path.getsize('my_dense.h5') >= os.path.getsize('my_dense_backup.h5'):
    model = load_model('my_dense.h5')
   else:
    model = load_model('my_dense_backup.h5')
- else:
+ else if os.path.exists('my_dense.h5'):
+  model = load_model('my_dense.h5')
+ else if os.path.exists('my_dense_backup.h5'):
+  model = load_model('my_dense_backup.h5')
+ else
   model = Sequential()
   model.add(Dense(784, input_dim=784, activation="sigmoid"))
   model.add(Dense(784, activation="sigmoid"))
