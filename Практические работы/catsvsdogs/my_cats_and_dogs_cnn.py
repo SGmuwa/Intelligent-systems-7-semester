@@ -35,8 +35,8 @@ import os
 if '-l' not in sys.argv:
  if not os.path.exists('my_dense.h5'):
   model = Sequential()
-  model.add(GaussianNoise(0.01))
-  model.add(Conv2D(64, (7, 7), input_shape=input_shape))
+  model.add(GaussianNoise(0.01, input_shape=input_shape))
+  model.add(Conv2D(64, (7, 7)))
   model.add(Activation('relu'))
   
   model.add(GaussianNoise(0.01))
