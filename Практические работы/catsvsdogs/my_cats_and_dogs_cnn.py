@@ -17,9 +17,9 @@ img_width, img_height = 32, 32
 # backend Tensorflow, channels_last
 input_shape = (img_width, img_height, 3)
 # Количество эпох
-epochs = 50
+epochs = 10
 # Количество изображений для проверки в процентах
-validation_split = 0.2
+validation_split = 0
 
 # Dataset of 50,000 32x32 color training images, labeled over 10 categories, and 10,000 test images.
 (x_train, y_train), (x_test, y_test) = cifar10.load_data()
@@ -72,8 +72,8 @@ if '-l' not in sys.argv:
  i = 0
  print('Start learning...')
  while True:
-  model.fit(x_train, y_train, epochs=epochs, validation_split=validation_split, verbose=1)
-  history_scores.append(model.evaluate(x_test, y_test, verbose=1))
+  model.fit(x_train, y_train, epochs=epochs, validation_split=validation_split, verbose=0)
+  history_scores.append(model.evaluate(x_test, y_test, verbose=0))
   if history_scores[-1][0] > history_scores[0][0]:
    break
   print(datetime.datetime.now(), 'epoch: ', i, 'loss: ', history_scores[-1][0], 'accurate: ', history_scores[-1][1])
