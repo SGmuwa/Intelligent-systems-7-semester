@@ -41,15 +41,7 @@ if '-l' not in sys.argv:
   model.add(Activation('relu'))
   
   model.add(GaussianNoise(0.01))
-  model.add(Conv2D(64, (5, 5)))
-  model.add(Activation('relu'))
-  
-  model.add(GaussianNoise(0.01))
   model.add(Conv2D(32, (5, 5)))
-  model.add(Activation('relu'))
-  
-  model.add(GaussianNoise(0.01))
-  model.add(Conv2D(32, (3, 3)))
   model.add(Activation('relu'))
   
   model.add(GaussianNoise(0.01))
@@ -57,8 +49,6 @@ if '-l' not in sys.argv:
   model.add(Activation('relu'))
   
   model.add(Flatten())
-  model.add(Dense(45))
-  model.add(Activation('relu'))
   model.add(Dropout(0.25)) # Исключить переобучение
   model.add(Dense(10))
   model.add(Activation('sigmoid'))
