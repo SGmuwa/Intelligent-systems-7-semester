@@ -8,6 +8,7 @@ from tensorflow.python.keras.datasets import cifar10
 from tensorflow.keras.models import load_model
 from tensorflow.keras import utils
 from shutil import copyfile
+import numpy as np
 import datetime
 import sys
 
