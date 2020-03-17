@@ -3,7 +3,7 @@
 
 from tensorflow.python.keras.models import Sequential
 from tensorflow.python.keras.layers import Conv2D, MaxPooling2D
-from tensorflow.python.keras.layers import Activation, Dropout, Flatten, Dense
+from tensorflow.python.keras.layers import Activation, Dropout, Flatten, Dense, GaussianNoise
 from tensorflow.python.keras.datasets import cifar10
 from tensorflow.keras.models import load_model
 from tensorflow.keras import utils
