@@ -63,7 +63,7 @@ if '-l' not in sys.argv:
   model.add(Activation('sigmoid'))
   
   model.compile(loss='categorical_crossentropy',
-                optimizer='adam',
+                optimizer=Adagrad(lr=1e-3, epsilon=1e-10),
                 metrics=['accuracy'])
  else:
   model = load_model('my_dense.h5')
