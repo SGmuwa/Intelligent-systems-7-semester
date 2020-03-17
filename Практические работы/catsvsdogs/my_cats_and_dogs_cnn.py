@@ -35,7 +35,7 @@ import os
 if '-l' not in sys.argv:
  if not os.path.exists('my_dense.h5'):
   model = Sequential()
-  model.add(Conv2D(128, (5, 5), input_shape=input_shape))
+  model.add(Conv2D(64, (3, 3), input_shape=input_shape))
   model.add(Activation('relu'))
   
   model.add(Conv2D(64, (5, 5)))
@@ -44,10 +44,10 @@ if '-l' not in sys.argv:
   model.add(Conv2D(32, (5, 5)))
   model.add(Activation('relu'))
   
-  model.add(Conv2D(16, (5, 5)))
+  model.add(Conv2D(32, (7, 7)))
   model.add(Activation('relu'))
   
-  model.add(Conv2D(8, (5, 5)))
+  model.add(Conv2D(16, (7, 7)))
   model.add(Activation('relu'))
   
   model.add(Flatten())
