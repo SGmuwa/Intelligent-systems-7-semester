@@ -1,135 +1,95 @@
 #!/usr/bin/python3
 # coding: utf-8
 
-# # Распознавание собак и кошек на изображениях с помощью свёрточной нейронной сети
-# 
-# **Источник данных** - соревнования Kaggle [Dogs vs. Cats](https://www.kaggle.com/c/dogs-vs-cats/data).
-# 
-# Для распознавания используется свёрточная нейронная сеть.
-# 
-# Перед использованием необходимо скачать и подготовить данные для обучения, проверки и тестирования. Можно использовать пример в ноутбуке data_preparation
-
-from tensorflow.python.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.python.keras.models import Sequential
 from tensorflow.python.keras.layers import Conv2D, MaxPooling2D
 from tensorflow.python.keras.layers import Activation, Dropout, Flatten, Dense
 from tensorflow.python.keras.datasets import cifar10
+from tensorflow.keras.models import load_model
+from tensorflow.keras import utils
+from shutil import copyfile
+import datetime
+import sys
 
-(x_train, y_train), (x_test, y_test) = cifar10.load_data()
 # Размеры изображения
 img_width, img_height = 32, 32
 # Размерность тензора на основе изображения для входных данных в нейронную сеть
 # backend Tensorflow, channels_last
 input_shape = (img_width, img_height, 3)
 # Количество эпох
-epochs = 30
-# Размер мини-выборки
-batch_size = 16
-# Количество изображений для обучения
-nb_train_samples = 50000
+epochs = 50
 # Количество изображений для проверки в процентах
-nb_validation_samples = 0.2
-# Количество изображений для тестирования
-nb_test_samples = 10000
+validation_split = 0.2
 
- 
-# # Создаем генератор изображений
-# 
-# Генератор изображений создается на основе класса ImageDataGenerator. Генератор делит значения всех пикселов изображения на 255.
- 
-datagen = ImageDataGenerator(rescale=1. / 255)
+# Dataset of 50,000 32x32 color training images, labeled over 10 categories, and 10,000 test images.
+(x_train, y_train), (x_test, y_test) = cifar10.load_data()
 
-# ## Создаем свёрточную нейронную сеть
-# 
-# **Архитектура сети**
-# 1. Слой свертки, размер ядра 3х3, количество карт признаков - 32 шт., функция активации ReLU.
-# 2. Слой подвыборки, выбор максимального значения из квадрата 2х2
-# 3. Слой свертки, размер ядра 3х3, количество карт признаков - 32 шт., функция активации ReLU.
-# 4. Слой подвыборки, выбор максимального значения из квадрата 2х2
-# 5. Слой свертки, размер ядра 3х3, количество карт признаков - 64 шт., функция активации ReLU.
-# 6. Слой подвыборки, выбор максимального значения из квадрата 2х2
-# 7. Слой преобразования из двумерного в одномерное представление
-# 8. Полносвязный слой, 64 нейрона, функция активации ReLU.
-# 9. Слой Dropout.
-# 10. Выходной слой, 1 нейрон, функция активации sigmoid
-# 
-# Слои с 1 по 6 используются для выделения важных признаков в изображении, а слои с 7 по 10 - для классификации.
+y_train = utils.to_categorical(y_train, 10)
+y_test = utils.to_categorical(y_test, 10)
+classes = ["самолёт", "автомобиль", "птица", "кот", "олень", "пёс", "лягушка", "конь", "корабль", "грузовик"]
 
 import os
-if not os.path.exists('dense.h5'):
- model = Sequential()
- model.add(Conv2D(32, (3, 3), input_shape=input_shape))
- model.add(Activation('relu'))
- model.add(MaxPooling2D(pool_size=(2, 2)))
- 
- model.add(Conv2D(32, (3, 3)))
- model.add(Activation('relu'))
- model.add(MaxPooling2D(pool_size=(2, 2)))
- 
- model.add(Conv2D(64, (3, 3)))
- model.add(Activation('relu'))
- model.add(MaxPooling2D(pool_size=(2, 2)))
- 
- model.add(Flatten())
- model.add(Dense(64))
- model.add(Activation('relu'))
- model.add(Dropout(0.5))
- model.add(Dense(1))
- model.add(Activation('sigmoid'))
- 
- # Компилируем нейронную сеть
- 
- model.compile(loss='binary_crossentropy',
-               optimizer='adam',
-               metrics=['accuracy'])
- 
- # Генератор данных для обучения на основе изображений из каталога
- 
- train_generator = datagen.flow_from_directory(
-     train_dir,
-     target_size=(img_width, img_height),
-     batch_size=batch_size,
-     class_mode='binary')
- 
- # Генератор данных для проверки на основе изображений из каталога
- 
- val_generator = datagen.flow_from_directory(
-     val_dir,
-     target_size=(img_width, img_height),
-     batch_size=batch_size,
-     class_mode='binary')
- 
- # # Обучаем модель с использованием генераторов
- # 
- # train_generator - генератор данных для обучения
- # 
- # validation_data - генератор данных для проверки
- 
- model.fit_generator(
-     train_generator,
-     steps_per_epoch=nb_train_samples // batch_size,
-     epochs=epochs,
-     validation_data=val_generator,
-     validation_steps=nb_validation_samples // batch_size)
-
- model.save('dense.h5')
+if '-l' not in sys.argv:
+ if not os.path.exists('my_dense.h5'):
+  model = Sequential()
+  model.add(Conv2D(128, (5, 5), input_shape=input_shape))
+  model.add(Activation('relu'))
+  
+  model.add(Conv2D(64, (5, 5)))
+  model.add(Activation('relu'))
+  
+  model.add(Conv2D(32, (5, 5)))
+  model.add(Activation('relu'))
+  
+  model.add(Conv2D(16, (5, 5)))
+  model.add(Activation('relu'))
+  
+  model.add(Conv2D(8, (5, 5)))
+  model.add(Activation('relu'))
+  
+  model.add(Conv2D(4, (5, 5)))
+  model.add(Activation('relu'))
+  
+  model.add(Conv2D(2, (5, 5)))
+  model.add(Activation('relu'))
+  
+  model.add(Flatten())
+  model.add(Dense(50))
+  model.add(Activation('relu'))
+  model.add(Dropout(0.5)) # Исключить переобучение
+  model.add(Dense(10))
+  model.add(Activation('sigmoid'))
+  
+  model.compile(loss='categorical_crossentropy',
+                optimizer='adam',
+                metrics=['accuracy'])
+ else:
+  model = load_model('my_dense.h5')
+ print(model.summary())
+ history_scores = []
+ i = 0
+ print('Start learning...')
+ while True:
+  model.fit(x_train, y_train, epochs=epochs, validation_split=validation_split, verbose=1)
+  history_scores.append(model.evaluate(x_test, y_test, verbose=1))
+  if history_scores[-1][0] > history_scores[0][0]:
+   break
+  print(datetime.datetime.now(), 'epoch: ', i, 'loss: ', history_scores[-1][0], 'accurate: ', history_scores[-1][1])
+  if len(history_scores) > 10:
+   del history_scores[0]
+  model.save('my_dense.h5')
+  copyfile('my_dense.h5', 'my_dense_backup.h5')
+  i = i + 1
 else:
  from tensorflow.keras.models import load_model
- model = load_model('dense.h5')
-# # Оцениваем качество работы сети с помощью генератора
+ model = load_model('my_dense.h5')
 
- 
-# Генератор данных для тестирования на основе изображений из каталога
- 
-test_generator = datagen.flow_from_directory(
-    test_dir,
-    target_size=(img_width, img_height),
-    batch_size=batch_size,
-    class_mode='binary')
-
-scores = model.evaluate_generator(test_generator, nb_test_samples // batch_size)
-
-print("Аккуратность на тестовых данных: %.2f%%" % (scores[1]*100))
+predictions = model.predict(x_train)
+print('predictions[0]:', predictions[0])
+print('np.argmax(predictions[0])', np.argmax(predictions[0]))
+print('np.argmax(y_train[0])', np.argmax(y_train[0]))
+scores = model.evaluate(x_test, y_test, verbose=1)
+print('loss: ', scores[0], 'accurate: ', scores[1])
 
 from img_recognizer import recognize_img
-recognize_img(model, ['cat', 'dog'], input_shape, 'rgb')
+recognize_img(model, classes, input_shape, 'rgb')
