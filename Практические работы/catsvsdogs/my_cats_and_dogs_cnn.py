@@ -50,14 +50,8 @@ if '-l' not in sys.argv:
   model.add(Conv2D(8, (5, 5)))
   model.add(Activation('relu'))
   
-  model.add(Conv2D(4, (5, 5)))
-  model.add(Activation('relu'))
-  
-  model.add(Conv2D(2, (5, 5)))
-  model.add(Activation('relu'))
-  
   model.add(Flatten())
-  model.add(Dense(50))
+  model.add(Dense(45))
   model.add(Activation('relu'))
   model.add(Dropout(0.5)) # Исключить переобучение
   model.add(Dense(10))
