@@ -24,6 +24,8 @@ validation_split = 0.2
 # Dataset of 50,000 32x32 color training images, labeled over 10 categories, and 10,000 test images.
 (x_train, y_train), (x_test, y_test) = cifar10.load_data()
 
+x_train = x_train / 255.
+x_test = x_test / 255.
 y_train = utils.to_categorical(y_train, 10)
 y_test = utils.to_categorical(y_test, 10)
 classes = ["самолёт", "автомобиль", "птица", "кот", "олень", "пёс", "лягушка", "конь", "корабль", "грузовик"]
