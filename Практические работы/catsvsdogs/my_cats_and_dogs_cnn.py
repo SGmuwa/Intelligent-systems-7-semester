@@ -69,9 +69,9 @@ if '-l' not in sys.argv:
  while True:
   model.fit(x_train, y_train, epochs=epochs, validation_split=validation_split, verbose=0)
   history_scores.append(model.evaluate(x_test, y_test, verbose=0))
+  print(datetime.datetime.now(), 'epoch: ', i, 'loss: ', history_scores[-1][0], 'accurate: ', history_scores[-1][1])
   if history_scores[-1][0] > history_scores[0][0]:
    break
-  print(datetime.datetime.now(), 'epoch: ', i, 'loss: ', history_scores[-1][0], 'accurate: ', history_scores[-1][1])
   if len(history_scores) > 10:
    del history_scores[0]
   model.save('my_dense.h5')
