@@ -1,5 +1,21 @@
 #!/usr/bin/env python
 # coding: utf-8
+# Сеть радиально-базисных функций Radial Basis Function Network RBFN or RBF
+# Главное отличие RBF-сетей от обычных многослойных сетей прямого распространения состоит в функции нейронов скрытого слоя. В обычной многослойной сети каждый нейрон рабочего слоя реализует в многомерном пространстве гиперплоскость (рис. 2а), а RBF-нейрон – гиперсферу (рис. 2б, 2в).
+# 1. Пытаются разбить пространство наблюдений гиперсферами. Гиперсфера задаётся центром и радиусом. Каждый нейрон скрытого слоя реализует в многомерном пространстве гиперсферу.
+# 2. Каждый объект классифицируется к классу тем, где его ближайший центр
+# 3. Есть входной слой, есть скрытый слой, есть выходной слой.
+# Скрытый — это радиально-базисный слой. В большинство реализаций скрытый слой имеет больший размер, чем входной слой. Каждый скрытый нейрон символизирует центр некоторой гипер-сферы кластера данных. Выход нейрона — это реакция на расстояние от наблюдения до центра. Вместо весов координаты центра. Выходной слой это один или несколько нейронов.
+# 4. Активационная функция скрытых нейронов exp(-abs(x-x[i])^2/(2(σ[i]^2))). Если расстояние от наблюдения до центра велико, то функция будет уменьшаться. 
+# 5. Обучение сети РБФ. Сначала определяются центры и отклонения (радиус) для радиальных нейронов. Настройка параметров линейного выходного слоя. Расположение центров должно соответсвовать кластерам реально присутствующих в исходных данных.
+# 6. Использование: хорошо работает только с наблюдениями, лежащими близко к обучающим наблюдениям. При удалении от обучающего множества значение функции отклика быстро спадает до нуля. Используется в задачах регрессии и классификации.
+# Функция отклика — Выход скрытого слоя?
+
+# abs(x - c[i]) = √((x[1] - c[1])² + (x[2] - c[2])² + ... + (x[n] - c[n])²)
+# c[i] — нейрон. x — вход.
+
+# https://basegroup.ru/community/articles/rbf
+
 
 
 import numpy as np
@@ -32,7 +48,6 @@ class RadialBasisFunctionNetworks:
 
     def _calculate_interpolation_matrix(self, X):
         '''Вычисление интерполяционной матрицы'''
-        print(X.shape[0])
         F = np.zeros((X.shape[0], self.hidden_shape))
         for ind_X, x in enumerate(X):
             for ind_c, center in enumerate(self.centers):
@@ -80,7 +95,7 @@ class RadialBasisFunctionNetworks:
                 su += (np.sum(self.centers[r]-c)**2)
             su = (su/self.R)**(1/2)
             self.sigma_mass = np.append(self.sigma_mass, [su])
-        print("sigma_mass", self.sigma_mass)
+        print("Σ mass:", self.sigma_mass)
 
     def fit(self, X, Y):
         '''Обучение'''
@@ -101,7 +116,9 @@ class RadialBasisFunctionNetworks:
 
 # Чтение данных из файла
 x = []
-# данные зависимости потребления Y (усл. ед.) от дохода X (усл.ед.) для некоторых домашних хозяйств.
+# Ирисы описываются по 4 критериям. Ширины, длины...
+# Ирисы Фишера — это набор данных для задачи классификации, на примере которого Рональд Фишер в 1936 году продемонстрировал работу разработанного им метода дискриминантного анализа.
+# https://ru.wikipedia.org/wiki/Ирисы_Фишера
 f = open("Irisy.txt", encoding='utf-8')
 for line in f:
     l = line.split(' ')
@@ -112,6 +129,7 @@ x = np.array(x)
 
 
 y = []
+# Ответы ирисов
 f = open("y.txt", encoding='utf-8')
 for line in f:
     l = line.split(' ')
@@ -127,14 +145,14 @@ model = RadialBasisFunctionNetworks(
 model.fit(x, y)
 y_pred = model.predict(x)
 
+# Подсчёт точности
 count = 0
 for i, el in enumerate(y_pred):
-    # print(np.argmax(el),np.argmax(y[i]))#по строкам
     if(np.argmax(el) == np.argmax(y[i])):
         count += 1
 
 
-print("Accuracy", (count/x.shape[0])*100)
+print("Точность", round((count/x.shape[0])*100), "%")
 
 
 # # Тестирование сети для данных о кластеризации по вероятности страхового случая
@@ -171,12 +189,11 @@ y_pred = model2.predict(x)
 
 count = 0
 for i, el in enumerate(y_pred):
-    # print(np.argmax(el),np.argmax(y[i]))#по строкам
     if(np.argmax(el) == np.argmax(y[i])):
         count += 1
 
 
-print("Accuracy", (count/x.shape[0])*100)
+print("Точность", round((count/x.shape[0])*100), "%")
 
 
 # # Тестирование сети на данных из лабы Backpropagation
@@ -217,7 +234,6 @@ test_data = [
 
 x, y = np.array([l for l, y in train_data]), np.array(
     [y for l, y in train_data])
-print(x)
 x_test, y_test = np.array([l for l, y in test_data]
                           ), np.array([y for l, y in test_data])
 
@@ -226,14 +242,12 @@ model3 = RadialBasisFunctionNetworks(
     input_shape=4, hidden_shape=15, output_shape=4)
 model3.fit(x, y)
 y_pred = model3.predict(x)
-# print(y_pred)
 
 count = 0
 for i, el in enumerate(y_pred):
-    # print(np.argmax(el),np.argmax(y[i]))#по строкам
     if(np.argmax(el) == np.argmax(y[i])):
         count += 1
-print("Accuracy", (count/x.shape[0])*100)
+print("Точность", round((count/x.shape[0])*100), "%")
 
 
 y_pred = model3.predict(x_test)
@@ -243,7 +257,7 @@ for i, el in enumerate(y_pred):
     print(np.argmax(el), np.argmax(y_test[i]))  # по строкам
     if(np.argmax(el) == np.argmax(y_test[i])):
         count += 1
-print("Accuracy", (count/x_test.shape[0])*100)
+print("Точность", round((count/x_test.shape[0])*100), "%")
 
 
 n = 0.2
@@ -260,8 +274,6 @@ for i, el in enumerate(x):
     min = np.argmin(d)
     centers[min] = centers[min] + n*(el-centers[min])
     n = n/(1+(i/T))
-    print(i, n)
-print(centers)
 
 
 sigma_mass = np.array([])
@@ -275,16 +287,13 @@ for i in range(centers.shape[0]):
             d = np.append(d, [[j, s]], axis=0)
 
     d.view('i8,i8').sort(order=['f1'], axis=0)
-    print(d)
     # R близжайших соседей
     d = d[:R]
-    print(d)
 
     su = 0
     for r in range(d.shape[0]):
         su += (np.sum(centers[r]-c)**2)
     su /= R
     su = su**(1/2)
-    print(c, su)
     sigma_mass = np.append(sigma_mass, [su])
-print("sigma_mass", sigma_mass)
+print("Σ mass:", sigma_mass)
