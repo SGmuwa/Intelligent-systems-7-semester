@@ -1,5 +1,5 @@
 # Метод обратного распространения ошибки
-# Мы получаем результат 
+# Мы получаем ошибку на последнем слое, ищем разницу, и отправляем разницу вглубь обратно.
 
 import numpy as np
 import sys
@@ -124,7 +124,6 @@ for ep in range(epochs):
         # Ошибка на входном векторе
         i_loss = MSE(network.predict(np.array(input_stat)),
                      np.array(correct_predict))
-        #sys.stdout.write("\r {}, i_loss: {}".format(str(100 * ep/float(epochs))[:4], str(i_loss)[:5]))
 
         # Train
         network.fit(np.array(input_stat).T, np.array(correct_predict))
@@ -132,7 +131,6 @@ for ep in range(epochs):
         inputs_.append(np.array(input_stat))
         correct_predictions.append(np.array(correct_predict))
 
-    # print(correct_predictions)
     # Считаем ошибку после эпохи
     train_loss = 0
     for m in range(len(inputs_)):
@@ -166,5 +164,3 @@ for input_stat, correct_predict in test_data:
         str(input_stat),
         str(action[network.predict(np.array(input_stat)).argmax()]),
         str(action[np.array(correct_predict).argmax()])))
-#         str(network.direct_distribution(np.array(input_stat))),
-#         str(np.array(correct_predict))))
