@@ -1,4 +1,5 @@
 # Метод обратного распространения ошибки
+# Мы получаем результат 
 
 import numpy as np
 import sys
@@ -82,6 +83,7 @@ class Neurocontroller:
 
 
 def MSE(d, y):
+    """Среднеквадратическая ошибка"""
     return 0.5 * np.sum((d-y)**2)
 
 
@@ -169,47 +171,3 @@ for input_stat, correct_predict in test_data:
 #         str(np.array(correct_predict))))
 
 print('train_data', len(train_data))
-
-weights_0_1 = np.random.uniform(-0.5, 0.5, (5, 3))
-print(weights_0_1)
-inputs = np.array([1, 2, 3, 4, 5])
-inputs_1 = np.dot(inputs, weights_0_1)
-print(inputs_1)
-
-l = [0.10761236, 0.13300704, 0.08303307, 0.01834851, 0.26472631]
-inputs = np.array([1, 2, 3, 4, 5])
-l2 = l*inputs
-print('l2.sum()', l2.sum())
-
-
-def sigmoid_derivative(val):
-    return (val * (1 - val))
-
-
-target_predict = np.array([1, 1, 1, 1])
-fact_predict_out = np.array([2, 3, 4, 5])
-(target_predict - fact_predict_out) * sigmoid_derivative(fact_predict_out)
-
-n = np.array([2, 0, 1, 1])
-n = np.append(n, 1)
-print(n)
-weights_0_1 = np.random.uniform(-0.5, 0.5, (5, 3))
-inputs_1 = np.dot(n, weights_0_1)
-inputs_1
-
-
-def MSE(d, y):
-    return 0.5 * np.sum((d-y)**2)
-
-
-d = np.array([0, 0, 1, 0])
-y = np.array([2, 3, 4, 5])
-#-2 -3 -3 -5
-# 4  9  9  25
-#
-MSE(d, y)
-
-weights_0_1 = np.random.uniform(-0.5, 0.5, (5, 3))
-print(weights_0_1)
-weights_0_1[:, 0] += 5*5*np.array([1, 1, 1, 1, 1])
-print(weights_0_1)
