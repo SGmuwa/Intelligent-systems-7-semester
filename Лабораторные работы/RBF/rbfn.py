@@ -288,36 +288,3 @@ for i in range(centers.shape[0]):
     print(c, su)
     sigma_mass = np.append(sigma_mass, [su])
 print("sigma_mass", sigma_mass)
-
-
-a = np.array([1, 2, 3])
-a = a-a
-print(a)
-
-
-A = [[1, 2, 3], [4, 5, 6]]
-A = np.append(A, [[7, 8, 9]], axis=0)
-print(A)
-
-C = np.array([4, 5, 6])
-C = np.append(C, [4, 5, 6])
-print(C)
-
-
-arr = np.empty((0, 2), float)
-arr = np.append(arr, np.array([[1, 2]]), axis=0)
-arr = np.append(arr, np.array([[4, 5]]), axis=0)
-print(arr)
-
-
-l = [3.54188246e-06,  2.68118731e-08,  4.33050555e-05]
-min(l)
-
-
-x = np.random.uniform(-1, 1, (10, 3))  # равномерное распределение
-print(x)
-
-
-b = np.array([1, 2, 3, 4, 5, 6])
-c = np.array([1, 1, 1, 1, 1, 1])
-print(np.linalg.norm(b-c)**2)
