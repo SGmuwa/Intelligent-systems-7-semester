@@ -109,8 +109,7 @@ train_data = [
     ([0, 1, 0, 1], [0, 0, 0, 1]),
 ]
 
-# атаковать бежать бродить/уворачиваться прятаться
-action = ["Attack", "Run", "Wander", "Hide"]
+action = ["Скупка     ", "Продажа    ", "Накапливать", "Тратить    "]
 
 # Обучение и тестирование нейроконтроллера
 epochs = 500
@@ -139,19 +138,18 @@ for ep in range(epochs):
     for m in range(len(inputs_)):
         train_loss += MSE(network.predict(
             np.array(inputs_[m])), np.array(correct_predictions[m]))
-    sys.stdout.write("\rProgress: {}, Training loss: {}".format(
+    sys.stdout.write("\r{}%, отклонение: {}".format(
         str(100 * ep/float(epochs))[:4], str(train_loss)[:5]))
 
 # Проверяем сеть
+print("\nДанные для обучения:")
 for input_stat, correct_predict in train_data:
-    print("For input: {} the prediction is: {}, expected: {}".format(
+    print("Рынок: {} Инвестор: {} Ожидалось: {}".format(
         str(input_stat),
         str(action[network.predict(np.array(input_stat)).argmax()]),
         str(action[np.array(correct_predict).argmax()])))
 
 # Прогон на тестовых данных
-# атаковать бежать бродить прятаться
-action = ["Attack", "Run", "Wander", "Hide"]
 test_data = [
     ([2, 1, 1, 1], [1, 0, 0, 0]),
     ([1, 1, 1, 2], [0, 0, 0, 1]),
@@ -162,12 +160,11 @@ test_data = [
     ([0, 1, 0, 3], [0, 1, 0, 0]),
 
 ]
+print("Тестовые данные:")
 for input_stat, correct_predict in test_data:
-    print("For input: {} the prediction is: {}, expected: {}".format(
+    print("Рынок: {} Инвестор: {} Ожидалось: {}".format(
         str(input_stat),
         str(action[network.predict(np.array(input_stat)).argmax()]),
         str(action[np.array(correct_predict).argmax()])))
 #         str(network.direct_distribution(np.array(input_stat))),
 #         str(np.array(correct_predict))))
-
-print('train_data', len(train_data))
