@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+# coding: utf-8
 # Рекуррентная сеть Хопфилда
 
 import numpy as np
