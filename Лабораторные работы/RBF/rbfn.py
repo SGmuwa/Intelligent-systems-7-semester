@@ -290,10 +290,6 @@ for i in range(centers.shape[0]):
     # R близжайших соседей
     d = d[:R]
 
-    su = 0
-    for r in range(d.shape[0]):
-        su += (np.sum(centers[r]-c)**2)
-    su /= R
-    su = su**(1/2)
+    su = (sum(np.sum(centers[r]-c)**2 for r in range(d.shape[0])) / R) ** 0.5
     sigma_mass = np.append(sigma_mass, [su])
 print("Σ mass:", sigma_mass)
