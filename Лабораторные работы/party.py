@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 # coding: utf-8
 
-
 import numpy as np
 import sys
 
@@ -58,8 +57,6 @@ train = [
     ([1, 1, 0], 0),
     ([1, 1, 1], 0),
 ]
-#epochs = 5000
-#learning_rate = 0.05
 epochs = 6000
 learning_rate = 0.08
 network = PartyNN(learning_rate=learning_rate)
