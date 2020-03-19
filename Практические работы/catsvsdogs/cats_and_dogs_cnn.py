@@ -60,7 +60,7 @@ datagen = ImageDataGenerator(rescale=1. / 255)
 # Слои с 1 по 6 используются для выделения важных признаков в изображении, а слои с 7 по 10 - для классификации.
 
 import os
-if not os.path.exists('dense.h5'):
+if not os.path.exists('cnn.h5'):
  model = Sequential()
  model.add(Conv2D(32, (3, 3), input_shape=input_shape))
  model.add(Activation('relu'))
@@ -116,10 +116,10 @@ if not os.path.exists('dense.h5'):
      validation_data=val_generator,
      validation_steps=nb_validation_samples // batch_size)
 
- model.save('dense.h5')
+ model.save('cnn.h5')
 else:
  from tensorflow.keras.models import load_model
- model = load_model('dense.h5')
+ model = load_model('cnn.h5')
 # # Оцениваем качество работы сети с помощью генератора
 
  
@@ -133,7 +133,7 @@ test_generator = datagen.flow_from_directory(
 
 scores = model.evaluate_generator(test_generator, nb_test_samples // batch_size)
 
-print("Аккуратность на тестовых данных: %.2f%%" % (scores[1]*100))
+print("Loss: %.2f%%\nAccurate: %.2f%%" % (scores[0]*100), (scores[1]*100))
 
 from img_recognizer import recognize_img
 recognize_img(model, ['cat', 'dog'], input_shape, 'rgb')
