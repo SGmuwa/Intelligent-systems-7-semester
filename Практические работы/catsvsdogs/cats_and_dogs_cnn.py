@@ -133,7 +133,7 @@ test_generator = datagen.flow_from_directory(
 
 scores = model.evaluate_generator(test_generator, nb_test_samples // batch_size)
 
-print("Loss: %.2f%%\nAccurate: %.2f%%" % (scores[0]*100), (scores[1]*100))
+print("Loss: %.2f%%\nAccurate: %.2f%%" % (scores[0]*100, scores[1]*100))
 
 from img_recognizer import recognize_img
 recognize_img(model, ['cat', 'dog'], input_shape, 'rgb')
