@@ -1,5 +1,20 @@
 #!/usr/bin/python3
 # coding: utf-8
+#    Homework of Intelligent systems in 8 semester.
+#    Copyright (C) 2020  Sidorenko Mikhail Pavlovich (motherlode.muwa@gmail.com)
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 # Сеть радиально-базисных функций Radial Basis Function Network RBFN or RBF
 # Главное отличие RBF-сетей от обычных многослойных сетей прямого распространения состоит в функции нейронов скрытого слоя. В обычной многослойной сети каждый нейрон рабочего слоя реализует в многомерном пространстве гиперплоскость (рис. 2а), а RBF-нейрон – гиперсферу (рис. 2б, 2в).
 # 1. Пытаются разбить пространство наблюдений гиперсферами. Гиперсфера задаётся центром и радиусом. Каждый нейрон скрытого слоя реализует в многомерном пространстве гиперсферу.
