@@ -28,9 +28,6 @@ tmppath = '{}/{}'.format(tempfile.gettempdir(), 'vk_db')
 tmppath_download = '{}/{}'.format(tmppath, 'download')
 media = []
 
-result = None
-result_available = threading.Event()
-
 if not os.path.exists(tmppath_download):
     if not os.path.exists(tmppath):
         os.mkdir(tmppath)
@@ -39,53 +36,40 @@ secret_data = [line.rstrip('\n') for line in open('api_id_hash.secret')]
 (api_id, api_hash) = (int(secret_data[0]), secret_data[1])
 
 def download_media(client: TelegramClient, message: types.Message):
-    if message.file:
-        print('save...')
-        path = client.download_file('{}/download'.format(tmppath), progress_callback=download_progress_callback)
-        newpath = path.replace('/download', '')
-        os.rename(path, newpath)
-        print('File saved to', newpath)  # printed after download is done
-        result = newpath
-    else:
-        result = None
-        print('not file')
-    result_available.set()
-    return result
-
     def bytes_to_string(byte_count):
         """Converts a byte count to a string (in KB, MB...)"""
         suffix_index = 0
         while byte_count >= 1024:
             byte_count /= 1024
             suffix_index += 1
-    
+
         return '{:.2f}{}'.format(
             byte_count, [' bytes', 'KB', 'MB', 'GB', 'TB'][suffix_index]
         )
     
-    @staticmethod
     def download_progress_callback(downloaded_bytes, total_bytes):
         print_progress(
             'Downloaded', downloaded_bytes, total_bytes
         )
 
-    @staticmethod
     def print_progress(progress_type, downloaded_bytes, total_bytes):
-        print('{} {} out of {} ({:.2%})'.format(
+        print('\r{} {} out of {} ({:.2%})  '.format(
             progress_type, bytes_to_string(downloaded_bytes),
-            bytes_to_string(total_bytes), downloaded_bytes / total_bytes)
+            bytes_to_string(total_bytes), downloaded_bytes / total_bytes), end='', flush=True
         )
+    
+    if message.file:
+        print('save...')
+        path = message.download_media('{}/download'.format(tmppath), progress_callback=download_progress_callback)
+        newpath = path.replace('/download', '')
+        os.rename(path, newpath)
+        print('\nFile saved to', newpath)  # printed after download is done
+        return newpath
+    else:
+        print('not file')
+        return None
 
-def handler(event: events.NewMessage.Event):
-    print('!')
-    print('sgmuwa_cnn_bot', 'got new message.', event.chat.title, event.message.text)
-    path = download_media(event.client, event.message)
-    event.respond('Saved.' if path else 'Not media.')
 
-print('sgmuwa_cnn_bot')
-client_sgmuwa_cnn_bot = TelegramClient('sgmuwa_cnn_bot', api_id, api_hash)
-client_sgmuwa_cnn_bot.add_event_handler(handler, events.NewMessage())
-client_sgmuwa_cnn_bot.connect()
 print('sg_muwa')
 client_sg_muwa = TelegramClient('sg_muwa', api_id, api_hash)
 client_sg_muwa.connect()
@@ -94,13 +78,10 @@ def getFileIterator():
     for message in client_sg_muwa.iter_messages('vk_db'):
         print('sg_muwa', message.id, message.text, message.chat.title)
         if message.file:
-            client_sg_muwa.send_message('sgmuwa_cnn_bot', message)
-            print('ok, wait...')
-            while not result_available.is_set():
-                print('.', end='', flush=True)
-                client_sgmuwa_cnn_bot.catch_up()
-            if result:
-                yield result
+            path = download_media(client_sg_muwa, message)
+            if path is not None:
+                yield path
+                os.remove(path)
 
 def main():
     for file in getFileIterator():
