@@ -18,48 +18,98 @@
 
 from telethon.sync import TelegramClient
 from telethon import events
-import os
+from telethon import types
+import threading
 import tempfile
+import asyncio
+import os
 
 tmppath = '{}/{}'.format(tempfile.gettempdir(), 'vk_db')
 tmppath_download = '{}/{}'.format(tmppath, 'download')
+media = []
 
-async def download_media(message):
+result = None
+result_available = threading.Event()
+
+if not os.path.exists(tmppath_download):
+    if not os.path.exists(tmppath):
+        os.mkdir(tmppath)
+    os.mkdir(tmppath_download)
+secret_data = [line.rstrip('\n') for line in open('api_id_hash.secret')]
+(api_id, api_hash) = (int(secret_data[0]), secret_data[1])
+
+async def download_media(message: types.Message):
     if message.file:
-        path = await message.download_media('{}/download'.format(tmppath))
+        print('save...')
+        path = await message.download_media('{}/download'.format(tmppath), progress_callback=download_progress_callback)
         newpath = path.replace('/download', '')
         os.rename(path, newpath)
         print('File saved to', newpath)  # printed after download is done
-        return True
+        result = newpath
     else:
-        return False
+        result = None
+        print('not file')
+    result_available.set()
+    return result
 
-def main(client: TelegramClient):
-
-    #async for message in client.iter_messages('sg_muwa'):
-    #    print(message.id, message.text)
-    #    # You can download media from messages, too!
-    #    # The method will return the path where the file was saved.
-    #    if message.file:
-    #        path = await message.download_media('{}/download'.format(tmppath))
-    #        newpath = path.replace('/download', '')
-    #        os.rename(path, newpath)
-    #        print('File saved to', newpath)  # printed after download is done
-    @client.on(events.NewMessage())
-    async def handler(event: events.NewMessage.Event):
-        await event.respond('Saved.' if await download_media(event.message) else 'Not media.')
+    def bytes_to_string(byte_count):
+        """Converts a byte count to a string (in KB, MB...)"""
+        suffix_index = 0
+        while byte_count >= 1024:
+            byte_count /= 1024
+            suffix_index += 1
     
+        return '{:.2f}{}'.format(
+            byte_count, [' bytes', 'KB', 'MB', 'GB', 'TB'][suffix_index]
+        )
+    
+    @staticmethod
+    def download_progress_callback(downloaded_bytes, total_bytes):
+        print_progress(
+            'Downloaded', downloaded_bytes, total_bytes
+        )
 
-    client.run_until_disconnected()
+    @staticmethod
+    def print_progress(progress_type, downloaded_bytes, total_bytes):
+        print('{} {} out of {} ({:.2%})'.format(
+            progress_type, bytes_to_string(downloaded_bytes),
+            bytes_to_string(total_bytes), downloaded_bytes / total_bytes)
+        )
+def sgmuwa_cnn_bot(client: TelegramClient):
+    async def handler(event: events.NewMessage.Event):
+        print('sgmuwa_cnn_bot', 'got new message.', event.chat.title, event.message.text)
+        path = await download_media(event.message)
+        await event.respond('Saved.' if path else 'Not media.')
+    client.add_event_handler(handler, events.NewMessage())
 
+def sg_muwa(client: TelegramClient, other: TelegramClient):
+    for message in client.iter_messages('vk_db'):
+        print('sg_muwa', message.id, message.text, message.chat.title)
+        if message.file:
+            client.send_message('sgmuwa_cnn_bot', message)
+            print('ok, wait...')
+            while not result_available.is_set():
+                print('.', end='', flush=True)
+                other.catch_up()
+            if result:
+                yield result
+
+print('sgmuwa_cnn_bot')
+client_sgmuwa_cnn_bot = TelegramClient('sgmuwa_cnn_bot', api_id, api_hash)
+client_sgmuwa_cnn_bot.connect()
+print('sg_muwa')
+client_sg_muwa = TelegramClient('sg_muwa', api_id, api_hash)
+client_sg_muwa.connect()
+
+def getFileIterator():
+    sgmuwa_cnn_bot(client_sgmuwa_cnn_bot)
+    return sg_muwa(client_sg_muwa, client_sgmuwa_cnn_bot)
+
+def main():
+    for file in getFileIterator():
+        print('ok:', file)
+    else:
+        print('bad')
 
 if __name__ == '__main__':
-    if not os.path.exists(tmppath_download):
-        if not os.path.exists(tmppath):
-            os.mkdir(tmppath)
-        os.mkdir(tmppath_download)
-    
-    secret_data = [line.rstrip('\n') for line in open('api_id_hash.secret')]
-    (session_name, api_id, api_hash) = (secret_data[0], int(secret_data[1]), secret_data[2])
-    with TelegramClient(session_name, api_id, api_hash) as client:
-        main(client)
+    main()
