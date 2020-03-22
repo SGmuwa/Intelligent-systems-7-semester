@@ -17,29 +17,49 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 from telethon.sync import TelegramClient
+from telethon import events
 import os
 import tempfile
 
-async def main(client):
-    tmppath = '{}/{}'.format(tempfile.gettempdir(), 'vk_db')
-    if not os.path.exists(tmppath):
-        os.mkdir(tmppath)
-    tmppath_download = '{}/{}'.format(tmppath, 'download')
-    if not os.path.exists(tmppath_download):
-        os.mkdir(tmppath_download)
-    async for message in client.iter_messages('vk_db'):
-        print(message.id, message.text)
-        # You can download media from messages, too!
-        # The method will return the path where the file was saved.
-        if message.file:
-            path = await message.download_media('{}/download'.format(tmppath))
-            newpath = path.replace('/download', '')
-            os.rename(path, newpath)
-            print('File saved to', newpath)  # printed after download is done
+tmppath = '{}/{}'.format(tempfile.gettempdir(), 'vk_db')
+tmppath_download = '{}/{}'.format(tmppath, 'download')
+
+async def download_media(message):
+    if message.file:
+        path = await message.download_media('{}/download'.format(tmppath))
+        newpath = path.replace('/download', '')
+        os.rename(path, newpath)
+        print('File saved to', newpath)  # printed after download is done
+        return True
+    else:
+        return False
+
+def main(client: TelegramClient):
+
+    #async for message in client.iter_messages('sg_muwa'):
+    #    print(message.id, message.text)
+    #    # You can download media from messages, too!
+    #    # The method will return the path where the file was saved.
+    #    if message.file:
+    #        path = await message.download_media('{}/download'.format(tmppath))
+    #        newpath = path.replace('/download', '')
+    #        os.rename(path, newpath)
+    #        print('File saved to', newpath)  # printed after download is done
+    @client.on(events.NewMessage())
+    async def handler(event: events.NewMessage.Event):
+        await event.respond('Saved.' if await download_media(event.message) else 'Not media.')
+    
+
     client.run_until_disconnected()
 
+
 if __name__ == '__main__':
+    if not os.path.exists(tmppath_download):
+        if not os.path.exists(tmppath):
+            os.mkdir(tmppath)
+        os.mkdir(tmppath_download)
+    
     secret_data = [line.rstrip('\n') for line in open('api_id_hash.secret')]
     (session_name, api_id, api_hash) = (secret_data[0], int(secret_data[1]), secret_data[2])
     with TelegramClient(session_name, api_id, api_hash) as client:
-        client.loop.run_until_complete(main(client))
+        main(client)
