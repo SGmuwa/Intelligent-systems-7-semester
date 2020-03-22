@@ -16,16 +16,30 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from telethon.sync import TelegramClient, events
-secret_data = [line.rstrip('\n') for line in open('api_id_hash.secret')]
-api_id = int(secret_data[0])
-api_hash = secret_data[1]
-with TelegramClient('sg_muwa', api_id, api_hash) as client:
-    print(client.get_me().stringify())
-    client.send_message('sg_muwa', 'Hello! Talking to you from Telethon')
+from telethon.sync import TelegramClient
+import os
+import tempfile
 
-    @client.on(events.NewMessage(pattern='(?i)hi|hello'))
-    async def handler(event):
-        await event.respond('Hey!')
-
+async def main(client):
+    tmppath = '{}/{}'.format(tempfile.gettempdir(), 'vk_db')
+    if not os.path.exists(tmppath):
+        os.mkdir(tmppath)
+    tmppath_download = '{}/{}'.format(tmppath, 'download')
+    if not os.path.exists(tmppath_download):
+        os.mkdir(tmppath_download)
+    async for message in client.iter_messages('vk_db'):
+        print(message.id, message.text)
+        # You can download media from messages, too!
+        # The method will return the path where the file was saved.
+        if message.file:
+            path = await message.download_media('{}/download'.format(tmppath))
+            newpath = path.replace('/download', '')
+            os.rename(path, newpath)
+            print('File saved to', newpath)  # printed after download is done
     client.run_until_disconnected()
+
+if __name__ == '__main__':
+    secret_data = [line.rstrip('\n') for line in open('api_id_hash.secret')]
+    (session_name, api_id, api_hash) = (secret_data[0], int(secret_data[1]), secret_data[2])
+    with TelegramClient(session_name, api_id, api_hash) as client:
+        client.loop.run_until_complete(main(client))
