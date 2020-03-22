@@ -28,18 +28,18 @@ def mp3_sound(filename: str):
     return filename
 
 def generator_10sec_song(sound: pydub.AudioSegment):
-    while len(song) > 10 * 1000:
+    while len(sound) > 10 * 1000:
         yield sound[:10 * 1000]
-        sound = [10 * 1000:]
-    else:
-        return sound
+        sound = sound[10 * 1000:]
+    yield sound
 
 def generator_small_and_big_wav(mp3):
-    yield mp3_to_wav(mp3)
+    return pydub.AudioSegment.from_mp3(mp3)
 
 if __name__ == '__main__':
     import download_data
     for path in download_data.getFileIterator():
         for a in generator_small_and_big_wav(path):
-            print(a)
+            print('all sound:', a)
+            print('sound[0]:', a[0])
 
