@@ -16,6 +16,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+import numpy as np
 import pydub
 # apt-get install libav-tools libavcodec-extra
 
@@ -23,9 +24,7 @@ def create_good_bad_sound(filename: str):
     soundGood = pydub.AudioSegment.from_mp3(filename)
     soundGood = soundGood.set_channels(1).set_frame_rate(5000)
     soundBad = soundGood
-    print('len good:', len(soundGood.raw_data), 'len bad: ', len(soundBad.raw_data))
     soundBad = soundBad.set_frame_rate(4900)
-    print('len good:', len(soundGood.raw_data), 'len bad: ', len(soundBad.raw_data))
     return (soundGood, soundBad)
 
 def generator_10sec_song(sound: pydub.AudioSegment, duration: int = 100):
@@ -39,7 +38,7 @@ def generator_bad_and_good_sound(mp3):
     good_gen = generator_10sec_song(soundGood)
     bad_gen = generator_10sec_song(soundBad)
     for g, b in zip(good_gen, bad_gen):
-        yield(b.raw_data, g.raw_data)
+        yield(np.array([[x / 255. for x in b.raw_data]]), np.array([[y / 255. for y in g.raw_data]]))
 
 if __name__ == '__main__':
     import download_data
