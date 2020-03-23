@@ -69,12 +69,10 @@ def download_media(client: TelegramClient, message: types.Message):
         print('not file')
         return None
 
-
-print('sg_muwa')
-client_sg_muwa = TelegramClient('sg_muwa', api_id, api_hash)
-client_sg_muwa.connect()
-
 def getFileIterator():
+    print('sg_muwa')
+    client_sg_muwa = TelegramClient('sg_muwa', api_id, api_hash)
+    client_sg_muwa.connect()
     for message in client_sg_muwa.iter_messages('vk_db'):
         print('sg_muwa', message.id, message.text, message.chat.title)
         if message.file:
@@ -82,6 +80,7 @@ def getFileIterator():
             if path is not None:
                 yield path
                 os.remove(path)
+    client_sg_muwa.disconnect()
 
 def main():
     for file in getFileIterator():
