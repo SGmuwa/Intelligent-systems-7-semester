@@ -19,27 +19,34 @@
 import pydub
 # apt-get install libav-tools libavcodec-extra
 
-def mp3_sound(filename: str):
-    sound = pydub.AudioSegment.from_mp3(filename)
-    if filename[-4:] == '.mp3':
-        filename = filename[:-4]
-    filename += '.wav'
-    sound.export(filename, format="wav")
-    return filename
+def create_good_bad_sound(filename: str):
+    soundGood = pydub.AudioSegment.from_mp3(filename)
+    soundGood = soundGood.set_channels(1).set_frame_rate(5000)
+    soundBad = soundGood
+    print('len good:', len(soundGood.raw_data), 'len bad: ', len(soundBad.raw_data))
+    soundBad = soundBad.set_frame_rate(4900)
+    print('len good:', len(soundGood.raw_data), 'len bad: ', len(soundBad.raw_data))
+    return (soundGood, soundBad)
 
-def generator_10sec_song(sound: pydub.AudioSegment):
-    while len(sound) > 10 * 1000:
-        yield sound[:10 * 1000]
-        sound = sound[10 * 1000:]
+def generator_10sec_song(sound: pydub.AudioSegment, duration: int = 100):
+    while len(sound) > duration:
+        yield sound[:duration]
+        sound = sound[duration:]
     yield sound
 
-def generator_small_and_big_wav(mp3):
-    return pydub.AudioSegment.from_mp3(mp3)
+def generator_bad_and_good_sound(mp3):
+    (soundGood, soundBad) = create_good_bad_sound(mp3)
+    good_gen = generator_10sec_song(soundGood)
+    bad_gen = generator_10sec_song(soundBad)
+    for g, b in zip(good_gen, bad_gen):
+        yield(b.raw_data, g.raw_data)
 
 if __name__ == '__main__':
     import download_data
     for path in download_data.getFileIterator():
-        for a in generator_small_and_big_wav(path):
-            print('all sound:', a)
-            print('sound[0]:', a[0])
+        for a in generator_bad_and_good_sound(path):
+            print('len(sound[0]):', len(a[0]))
+            print('len(sound[1]):', len(a[1]))
+            break
+        break
 
