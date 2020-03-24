@@ -39,9 +39,9 @@ Y = []
 for path in getFileIterator():
     for (x, y) in generator_bad_and_good_sound(path):
         if len(x[0]) != 980:
-            x[0].extend([0.0 * (len(x[0]) - 980)])
+            x[0].extend([0.0] * (980 - len(x[0])))
         if len(y[0]) != 1000:
-            y[0].extend([0.0 * (len(y[0]) - 980)])
+            y[0].extend([0.0] * (1000 - len(y[0])))
         if X is None:
             X = x
         else:
