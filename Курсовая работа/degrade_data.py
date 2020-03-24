@@ -38,7 +38,7 @@ def generator_bad_and_good_sound(mp3):
     good_gen = generator_10sec_song(soundGood)
     bad_gen = generator_10sec_song(soundBad)
     for g, b in zip(good_gen, bad_gen):
-        yield(np.array([[x / 255. for x in b.raw_data]]), np.array([[y / 255. for y in g.raw_data]]))
+        yield(([[x / 255. for x in b.raw_data]]), ([[y / 255. for y in g.raw_data]]))
 
 if __name__ == '__main__':
     import download_data

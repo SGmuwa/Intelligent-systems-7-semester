@@ -34,30 +34,26 @@ model.compile(
     loss = mean_absolute_error)
 
 default_array = np.zeros((980), dtype=float)
-X = None
-Y = None
+X = []
+Y = []
 for path in getFileIterator():
     for (x, y) in generator_bad_and_good_sound(path):
         if len(x[0]) != 980:
-            target_size = np.zeros((980))
-            target_size[:x[0].shape[0]] = x[0]
-            x = np.array([target_size])
+            x[0].extend([0.0 * (len(x[0]) - 980)])
         if len(y[0]) != 1000:
-            target_size = np.zeros((1000))
-            target_size[:y[0].shape[0]] = y[0]
-            y = np.array([target_size])
+            y[0].extend([0.0 * (len(y[0]) - 980)])
         if X is None:
             X = x
         else:
-            X = np.concatenate((X, x))
+            X.append(x[0])
         if Y is None:
             Y = y
         else:
-            Y = np.concatenate((Y, y))
+            Y.append(y[0])
         print('\r{:.2%} '.format(len(X) / 100000.), end='', flush=True)
         if len(X) >= 100000:
             print()
-            model.fit(X, Y, epochs=100, validation_split=0.1, verbose=1)
-            X = None
-            Y = None
+            model.fit(np.array(X), np.array(Y), epochs=1000, validation_split=0.1, verbose=1)
+            X = []
+            Y = []
     print()
