@@ -33,7 +33,6 @@ model.compile(
     metrics = ["accuracy"],
     loss = mean_absolute_error)
 
-default_array = np.zeros((980), dtype=float)
 X = []
 Y = []
 for path in getFileIterator():
